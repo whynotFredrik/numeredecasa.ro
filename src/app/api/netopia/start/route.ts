@@ -68,6 +68,10 @@ export async function POST(request: NextRequest) {
     };
 
     // Call Netopia API v2
+    console.log('[Netopia] Calling:', `${NETOPIA_CONFIG.apiUrl}/payment/card/start`);
+    console.log('[Netopia] POS Signature:', NETOPIA_CONFIG.posSignature);
+    console.log('[Netopia] Has API Key:', !!NETOPIA_CONFIG.apiKey);
+    
     const netopiaResponse = await fetch(`${NETOPIA_CONFIG.apiUrl}/payment/card/start`, {
       method: 'POST',
       headers: {
@@ -78,6 +82,8 @@ export async function POST(request: NextRequest) {
     });
 
     const netopiaData = await netopiaResponse.json();
+    console.log('[Netopia] Response status:', netopiaResponse.status);
+    console.log('[Netopia] Full response:', JSON.stringify(netopiaData));
 
     if (!netopiaResponse.ok) {
       console.error('Netopia API Error:', netopiaData);

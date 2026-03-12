@@ -145,27 +145,31 @@ export default function CheckoutPage() {
       });
 
       const paymentData = await paymentResponse.json();
+      console.log('Payment API response:', JSON.stringify(paymentData));
 
       if (!paymentResponse.ok || !paymentData.success) {
         console.error('Payment API Error:', paymentData);
-        // Fallback: comanda este salvată, dar plata nu a putut fi inițiată
-        // Redirect direct la confirmare (plata se poate finaliza manual)
-        clearCart();
-        setIsSuccess(true);
+        setSubmitError(`Eroare plată: ${paymentData?.error || paymentData?.details?.message || JSON.stringify(paymentData)}`);
+        setIsSubmitting(false);
         return;
       }
 
-      // Netopia returnează un URL sau date HTML pentru redirect 3DS
-      const { payment } = paymentData;
+      // Netopia returnează un URL pentru redirect 3DS
+      const netopiaPayment = paymentData.payment;
+      const paymentURL = 
+        netopiaPayment?.payment?.paymentURL || 
+        netopiaPayment?.paymentURL ||
+        netopiaPayment?.data?.paymentURL ||
+        netopiaPayment?.url;
       
-      if (payment?.payment?.paymentURL) {
-        // Redirect la pagina de plată Netopia
+      if (paymentURL) {
         clearCart();
-        window.location.href = payment.payment.paymentURL;
+        window.location.href = paymentURL;
         return;
       }
 
-      // Dacă nu există URL de redirect, comanda e salvată, arătăm confirmarea
+      // Dacă Netopia nu dă URL dar confirmă succesul, afișăm confirmarea
+      console.warn('Netopia response without paymentURL:', netopiaPayment);
       clearCart();
       setIsSuccess(true);
       
