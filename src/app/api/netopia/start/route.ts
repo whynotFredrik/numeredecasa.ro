@@ -1,8 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-// Use the official netopia-payment2 SDK
-import { Netopia } from 'netopia-payment2';
-
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -17,98 +14,101 @@ export async function POST(request: NextRequest) {
     const isLive = process.env.NETOPIA_SANDBOX !== 'true';
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
-    console.log('[Netopia] isLive:', isLive, '| Has API key:', !!apiKey, '| POS:', posSignature);
+    const apiUrl = isLive 
+      ? 'https://secure.netopia-payments.com' 
+      : 'https://secure-sandbox.netopia-payments.com';
 
-    const netopia = new Netopia({
-      apiKey,
-      posSignature,
-      isLive,
+    console.log('[Netopia API] URL:', apiUrl);
+    console.log('[Netopia API] POS:', posSignature);
+
+    const paymentPayload = {
+      config: {
+        emailTemplate: '',
+        notifyUrl: `${siteUrl}/api/netopia/ipn`,
+        redirectUrl: `${siteUrl}/api/netopia/return`,
+        language: 'ro',
+      },
+      payment: {
+        options: {
+          installments: 0,
+          bonus: 0,
+        },
+        instrument: {
+          type: 'card',
+          account: '',
+          expMonth: 0,
+          expYear: 0,
+          secretCode: '',
+          token: '',
+        },
+        data: {},
+      },
+      order: {
+        ntpID: '',
+        posSignature: posSignature,
+        dateTime: new Date().toISOString(),
+        description: description || `Comandă numeredecasa.ro #${orderId.slice(0, 8)}`,
+        orderID: orderId,
+        amount: parseFloat(amount),
+        currency: currency || 'RON',
+        billing: {
+          email: billing?.email || '',
+          phone: billing?.phone || '',
+          firstName: billing?.firstName || '',
+          lastName: billing?.lastName || '',
+          city: billing?.city || '',
+          country: 642, // Romania ISO numeric code
+          state: billing?.county || '',
+          postalCode: billing?.postalCode || '',
+          details: billing?.address || '',
+        },
+        shipping: {
+          email: billing?.email || '',
+          phone: billing?.phone || '',
+          firstName: billing?.firstName || '',
+          lastName: billing?.lastName || '',
+          city: billing?.city || '',
+          country: 642,
+          state: billing?.county || '',
+          postalCode: '',
+          details: billing?.address || '',
+        },
+        products: [],
+        data: {},
+      },
+    };
+
+    console.log('[Netopia API] Request Body Length:', JSON.stringify(paymentPayload).length);
+
+    // Call Netopia API v2 directly to bypass SDK bugs
+    const netopiaResponse = await fetch(`${apiUrl}/payment/card/start`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': apiKey,
+      },
+      body: JSON.stringify(paymentPayload),
     });
 
-    const configData = {
-      emailTemplate: '',
-      emailSubject: '',
-      cancelUrl: `${siteUrl}/checkout`,
-      notifyUrl: `${siteUrl}/api/netopia/ipn`,
-      redirectUrl: `${siteUrl}/api/netopia/return`,
-      language: 'ro',
-    };
+    const netopiaData = await netopiaResponse.json();
+    console.log('[Netopia API] Response Status:', netopiaResponse.status);
+    console.log('[Netopia API] Full JSON Response:', JSON.stringify(netopiaData));
 
-    const paymentData = {
-      options: {
-        installments: 0,
-        bonus: 0,
-        split: [] as { posID: number; amount: number }[],
-      },
-      instrument: {
-        type: 'card',
-        account: '',
-        expMonth: 0,
-        expYear: 0,
-        secretCode: '',
-        token: '',
-        clientID: '',
-      },
-      data: {},
-    };
-
-    const orderData = {
-      ntpID: '',
-      posSignature,
-      dateTime: new Date().toISOString(),
-      description: description || `Comandă numeredecasa.ro #${orderId.slice(0, 8)}`,
-      orderID: orderId,
-      amount: parseFloat(amount),
-      currency: currency || 'RON',
-      billing: {
-        email: billing?.email || '',
-        phone: billing?.phone || '',
-        firstName: billing?.firstName || '',
-        lastName: billing?.lastName || '',
-        city: billing?.city || '',
-        country: 642,
-        countryName: 'Romania',
-        state: billing?.county || '',
-        postalCode: billing?.postalCode || '',
-        details: billing?.address || '',
-      },
-      shipping: {
-        email: billing?.email || '',
-        phone: billing?.phone || '',
-        firstName: billing?.firstName || '',
-        lastName: billing?.lastName || '',
-        city: billing?.city || '',
-        country: 642,
-        countryName: 'Romania',
-        state: billing?.county || '',
-        postalCode: '',
-        details: billing?.address || '',
-      },
-      products: [],
-      installments: {
-        selected: 0,
-        available: 0,
-      },
-      data: {},
-    };
-
-    const result = await netopia.createOrder(configData, paymentData, orderData);
-    console.log('[Netopia] SDK result:', JSON.stringify(result));
-
-    if (result.code === 200 && result.data) {
-      return NextResponse.json({
-        success: true,
-        payment: result.data,
-      });
+    if (!netopiaResponse.ok || netopiaData?.error?.code) {
+      return NextResponse.json(
+        { error: 'Payment initiation failed', details: netopiaData },
+        { status: 500 }
+      );
     }
 
-    return NextResponse.json(
-      { error: 'Payment initiation failed', details: result.message, code: result.code },
-      { status: 500 }
-    );
+    // Return the payment URL or form data for 3DS redirect
+    return NextResponse.json({
+      success: true,
+      payment: netopiaData,
+    });
 
   } catch (error: any) {
-    console.error('Payment start error:', error);
+    console.error('[Netopia API] Catch block error:', error);
     return NextResponse.json(
       { error: 'Internal server error', message: error.message },
       { status: 500 }
