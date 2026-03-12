@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { NETOPIA_CONFIG } from '@/lib/netopia/config';
+
+// Use the official netopia-payment2 SDK
+import { Netopia } from 'netopia-payment2';
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,99 +12,100 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const paymentPayload = {
-      config: {
-        emailTemplate: '',
-        notifyUrl: NETOPIA_CONFIG.notifyUrl,
-        redirectUrl: NETOPIA_CONFIG.redirectUrl,
-        language: 'ro',
-      },
-      payment: {
-        options: {
-          installments: 0,
-          bonus: 0,
-        },
-        instrument: {
-          type: 'card',
-          account: '',
-          expMonth: 0,
-          expYear: 0,
-          secretCode: '',
-          token: '',
-        },
-        data: {},
-      },
-      order: {
-        ntpID: '',
-        posSignature: NETOPIA_CONFIG.posSignature,
-        dateTime: new Date().toISOString(),
-        description: description || `Comandă numeredecasa.ro #${orderId.slice(0, 8)}`,
-        orderID: orderId,
-        amount: parseFloat(amount),
-        currency: currency || 'RON',
-        billing: {
-          email: billing?.email || '',
-          phone: billing?.phone || '',
-          firstName: billing?.firstName || '',
-          lastName: billing?.lastName || '',
-          city: billing?.city || '',
-          country: 642,
-          state: billing?.county || '',
-          postalCode: billing?.postalCode || '',
-          details: billing?.address || '',
-        },
-        shipping: {
-          email: billing?.email || '',
-          phone: billing?.phone || '',
-          firstName: billing?.firstName || '',
-          lastName: billing?.lastName || '',
-          city: billing?.city || '',
-          country: 642,
-          state: billing?.county || '',
-          postalCode: '',
-          details: billing?.address || '',
-        },
-        products: [],
-        data: {},
-      },
-    };
+    const apiKey = process.env.NETOPIA_API_KEY || '';
+    const posSignature = process.env.NETOPIA_POS_SIGNATURE || '';
+    const isLive = process.env.NETOPIA_SANDBOX !== 'true';
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
-    // Call Netopia API v2 with API key in body
-    console.log('[Netopia] Calling:', `${NETOPIA_CONFIG.apiUrl}/payment/card/start`);
-    console.log('[Netopia] POS Signature:', NETOPIA_CONFIG.posSignature);
-    console.log('[Netopia] Sandbox:', NETOPIA_CONFIG.isSandbox);
-    
-    // Netopia API v2 expects apiKey in the request body, not in the Authorization header
-    const fullPayload = {
-      ...paymentPayload,
-      apiKey: NETOPIA_CONFIG.apiKey,
-    };
+    console.log('[Netopia] isLive:', isLive, '| Has API key:', !!apiKey, '| POS:', posSignature);
 
-    const netopiaResponse = await fetch(`${NETOPIA_CONFIG.apiUrl}/payment/card/start`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(fullPayload),
+    const netopia = new Netopia({
+      apiKey,
+      posSignature,
+      isLive,
     });
 
-    const netopiaData = await netopiaResponse.json();
-    console.log('[Netopia] Response status:', netopiaResponse.status);
-    console.log('[Netopia] Full response:', JSON.stringify(netopiaData));
+    const configData = {
+      emailTemplate: '',
+      emailSubject: '',
+      cancelUrl: `${siteUrl}/checkout`,
+      notifyUrl: `${siteUrl}/api/netopia/ipn`,
+      redirectUrl: `${siteUrl}/api/netopia/return`,
+      language: 'ro',
+    };
 
-    if (!netopiaResponse.ok || netopiaData?.error?.code) {
-      console.error('Netopia API Error:', netopiaData);
-      return NextResponse.json(
-        { error: 'Payment initiation failed', details: netopiaData },
-        { status: 500 }
-      );
+    const paymentData = {
+      options: {
+        installments: 0,
+        bonus: 0,
+        split: [] as { posID: number; amount: number }[],
+      },
+      instrument: {
+        type: 'card',
+        account: '',
+        expMonth: 0,
+        expYear: 0,
+        secretCode: '',
+        token: '',
+        clientID: '',
+      },
+      data: {},
+    };
+
+    const orderData = {
+      ntpID: '',
+      posSignature,
+      dateTime: new Date().toISOString(),
+      description: description || `Comandă numeredecasa.ro #${orderId.slice(0, 8)}`,
+      orderID: orderId,
+      amount: parseFloat(amount),
+      currency: currency || 'RON',
+      billing: {
+        email: billing?.email || '',
+        phone: billing?.phone || '',
+        firstName: billing?.firstName || '',
+        lastName: billing?.lastName || '',
+        city: billing?.city || '',
+        country: 642,
+        countryName: 'Romania',
+        state: billing?.county || '',
+        postalCode: billing?.postalCode || '',
+        details: billing?.address || '',
+      },
+      shipping: {
+        email: billing?.email || '',
+        phone: billing?.phone || '',
+        firstName: billing?.firstName || '',
+        lastName: billing?.lastName || '',
+        city: billing?.city || '',
+        country: 642,
+        countryName: 'Romania',
+        state: billing?.county || '',
+        postalCode: '',
+        details: billing?.address || '',
+      },
+      products: [],
+      installments: {
+        selected: 0,
+        available: 0,
+      },
+      data: {},
+    };
+
+    const result = await netopia.createOrder(configData, paymentData, orderData);
+    console.log('[Netopia] SDK result:', JSON.stringify(result));
+
+    if (result.code === 200 && result.data) {
+      return NextResponse.json({
+        success: true,
+        payment: result.data,
+      });
     }
 
-    // Return the payment URL or form data for 3DS redirect
-    return NextResponse.json({
-      success: true,
-      payment: netopiaData,
-    });
+    return NextResponse.json(
+      { error: 'Payment initiation failed', details: result.message, code: result.code },
+      { status: 500 }
+    );
 
   } catch (error: any) {
     console.error('Payment start error:', error);
