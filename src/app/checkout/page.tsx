@@ -154,7 +154,7 @@ export default function CheckoutPage() {
         return;
       }
 
-      // Netopia returnează un URL pentru redirect 3DS
+      // Extract the paymentURL from the response
       const netopiaPayment = paymentData.payment;
       const paymentURL = 
         netopiaPayment?.payment?.paymentURL || 

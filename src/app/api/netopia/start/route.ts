@@ -94,7 +94,7 @@ export async function POST(request: NextRequest) {
     console.log('[Netopia API] Response Status:', netopiaResponse.status);
     console.log('[Netopia API] Full JSON Response:', JSON.stringify(netopiaData));
 
-    if (!netopiaResponse.ok || netopiaData?.error?.code) {
+    if (!netopiaResponse.ok || (netopiaData?.error?.code !== '00' && netopiaData?.error?.code !== '101')) {
       return NextResponse.json(
         { error: 'Payment initiation failed', details: netopiaData },
         { status: 500 }
