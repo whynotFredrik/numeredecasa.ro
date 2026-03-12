@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
           firstName: billing?.firstName || '',
           lastName: billing?.lastName || '',
           city: billing?.city || '',
-          country: 642, // Romania ISO numeric code
+          country: 642,
           state: billing?.county || '',
           postalCode: billing?.postalCode || '',
           details: billing?.address || '',
@@ -67,25 +67,30 @@ export async function POST(request: NextRequest) {
       },
     };
 
-    // Call Netopia API v2
+    // Call Netopia API v2 with API key in body
     console.log('[Netopia] Calling:', `${NETOPIA_CONFIG.apiUrl}/payment/card/start`);
     console.log('[Netopia] POS Signature:', NETOPIA_CONFIG.posSignature);
-    console.log('[Netopia] Has API Key:', !!NETOPIA_CONFIG.apiKey);
+    console.log('[Netopia] Sandbox:', NETOPIA_CONFIG.isSandbox);
     
+    // Netopia API v2 expects apiKey in the request body, not in the Authorization header
+    const fullPayload = {
+      ...paymentPayload,
+      apiKey: NETOPIA_CONFIG.apiKey,
+    };
+
     const netopiaResponse = await fetch(`${NETOPIA_CONFIG.apiUrl}/payment/card/start`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': NETOPIA_CONFIG.apiKey,
       },
-      body: JSON.stringify(paymentPayload),
+      body: JSON.stringify(fullPayload),
     });
 
     const netopiaData = await netopiaResponse.json();
     console.log('[Netopia] Response status:', netopiaResponse.status);
     console.log('[Netopia] Full response:', JSON.stringify(netopiaData));
 
-    if (!netopiaResponse.ok) {
+    if (!netopiaResponse.ok || netopiaData?.error?.code) {
       console.error('Netopia API Error:', netopiaData);
       return NextResponse.json(
         { error: 'Payment initiation failed', details: netopiaData },
