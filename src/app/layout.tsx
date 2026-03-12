@@ -21,8 +21,25 @@ const openSans = Open_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "numeredecasa.ro | Numere stradale premium, configurabile online",
-  description: "Configurează live și comandă numere stradale, numere de apartament sau semnalistică de birouri. Design premium, livrare Sameday.",
+  title: {
+    default: "numeredecasa.ro | Numere stradale premium, configurabile online",
+    template: "%s — numeredecasa.ro",
+  },
+  description: "Configurează live și comandă numere stradale, numere de apartament sau plăcuțe birou personalizate. Design premium, fabricat la comandă, livrare Sameday în toată România.",
+  keywords: ["numere casa", "numere stradale", "numar casa", "numar stradal", "placuta birou", "numar apartament", "semnalistica", "numere de casa", "numeredecasa"],
+  authors: [{ name: "SC GUNDAHAR SRL" }],
+  openGraph: {
+    title: "numeredecasa.ro — Numere Stradale Premium",
+    description: "Configurează-ți propriul număr stradal, de apartament sau plăcuță de birou. Fabricat la comandă, design premium, livrare Sameday.",
+    url: "https://numeredecasa.ro",
+    siteName: "numeredecasa.ro",
+    locale: "ro_RO",
+    type: "website",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

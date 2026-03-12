@@ -1,13 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { ShoppingBag } from 'lucide-react';
+import { ShoppingBag, Menu, X } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { useEffect, useState } from 'react';
 
 export function Navbar() {
     const { getCartCount, setCartOpen } = useCartStore();
     const [mounted, setMounted] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     useEffect(() => {
         setMounted(true);
@@ -28,7 +29,7 @@ export function Navbar() {
                     <Link href="/contact" className="text-sm font-medium hover:text-primary transition-colors duration-200">Contact</Link>
                 </nav>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
                     <button 
                         onClick={() => setCartOpen(true)}
                         className="relative w-10 h-10 flex items-center justify-center rounded-full hover:bg-foreground/5 transition-colors"
@@ -40,8 +41,39 @@ export function Navbar() {
                             </span>
                         )}
                     </button>
+
+                    {/* Mobile hamburger */}
+                    <button 
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        className="md:hidden w-10 h-10 flex items-center justify-center rounded-full hover:bg-foreground/5 transition-colors"
+                    >
+                        {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                    </button>
                 </div>
             </div>
+
+            {/* Mobile Menu Drawer */}
+            {mobileMenuOpen && (
+                <div className="md:hidden bg-background/95 backdrop-blur-xl border-b border-foreground/5 animate-in slide-in-from-top-2 duration-200">
+                    <nav className="container mx-auto px-6 py-6 flex flex-col gap-4">
+                        <Link href="/produse" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-primary transition-colors py-2 border-b border-foreground/5">
+                            Produse
+                        </Link>
+                        <Link href="/configurator" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium text-primary transition-colors py-2 border-b border-foreground/5">
+                            Configurator Live
+                        </Link>
+                        <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-primary transition-colors py-2 border-b border-foreground/5">
+                            Contact
+                        </Link>
+                        <Link href="/termeni" onClick={() => setMobileMenuOpen(false)} className="text-sm text-foreground/50 hover:text-primary transition-colors py-1">
+                            Termeni și Condiții
+                        </Link>
+                        <Link href="/confidentialitate" onClick={() => setMobileMenuOpen(false)} className="text-sm text-foreground/50 hover:text-primary transition-colors py-1">
+                            Politica de Confidențialitate
+                        </Link>
+                    </nav>
+                </div>
+            )}
         </header>
     );
 }
