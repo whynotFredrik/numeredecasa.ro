@@ -123,7 +123,49 @@ export default function CheckoutPage() {
         return;
       }
 
-      // 3. Succes! Golim coșul și arătăm confirmarea
+      // 3. Inițiază plata prin Netopia
+      const paymentResponse = await fetch('/api/netopia/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderId,
+          amount: grandTotal,
+          currency: 'RON',
+          description: `Comandă numeredecasa.ro #${orderId.slice(0, 8)}`,
+          billing: {
+            email,
+            phone,
+            firstName,
+            lastName,
+            city: shippingMethod === 'courier' ? city : selectedLocker?.city,
+            county: shippingMethod === 'courier' ? county : selectedLocker?.county,
+            address: shippingMethod === 'courier' ? address : selectedLocker?.address,
+          },
+        }),
+      });
+
+      const paymentData = await paymentResponse.json();
+
+      if (!paymentResponse.ok || !paymentData.success) {
+        console.error('Payment API Error:', paymentData);
+        // Fallback: comanda este salvată, dar plata nu a putut fi inițiată
+        // Redirect direct la confirmare (plata se poate finaliza manual)
+        clearCart();
+        setIsSuccess(true);
+        return;
+      }
+
+      // Netopia returnează un URL sau date HTML pentru redirect 3DS
+      const { payment } = paymentData;
+      
+      if (payment?.payment?.paymentURL) {
+        // Redirect la pagina de plată Netopia
+        clearCart();
+        window.location.href = payment.payment.paymentURL;
+        return;
+      }
+
+      // Dacă nu există URL de redirect, comanda e salvată, arătăm confirmarea
       clearCart();
       setIsSuccess(true);
       
