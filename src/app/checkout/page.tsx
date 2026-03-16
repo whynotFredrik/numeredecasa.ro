@@ -92,8 +92,8 @@ export default function CheckoutPage() {
         });
 
       if (orderError) {
-        console.error("Supabase Order Insert Error:", orderError);
-        setSubmitError(`Eroare db comandă: ${orderError.message}`);
+        console.error("Order insert error");
+        setSubmitError('A apărut o eroare la salvarea comenzii. Te rugăm să încerci din nou.');
         setIsSubmitting(false);
         return;
       }
@@ -117,8 +117,8 @@ export default function CheckoutPage() {
         .insert(orderItemsToInsert);
 
       if (itemsError) {
-        console.error("Supabase Items Insert Error:", itemsError);
-        setSubmitError(`Eroare db articole: ${itemsError.message}`);
+        console.error("Order items insert error");
+        setSubmitError('A apărut o eroare la salvarea produselor. Te rugăm să încerci din nou.');
         setIsSubmitting(false);
         return;
       }
@@ -145,11 +145,9 @@ export default function CheckoutPage() {
       });
 
       const paymentData = await paymentResponse.json();
-      console.log('Payment API response:', JSON.stringify(paymentData));
 
       if (!paymentResponse.ok || !paymentData.success) {
-        console.error('Payment API Error:', paymentData);
-        setSubmitError(`Eroare plată: ${paymentData?.error || paymentData?.details?.message || JSON.stringify(paymentData)}`);
+        setSubmitError(paymentData?.error || 'A apărut o eroare la procesarea plății. Te rugăm să încerci din nou.');
         setIsSubmitting(false);
         return;
       }
@@ -169,13 +167,11 @@ export default function CheckoutPage() {
       }
 
       // Dacă Netopia nu dă URL dar confirmă succesul, afișăm confirmarea
-      console.warn('Netopia response without paymentURL:', netopiaPayment);
       clearCart();
       setIsSuccess(true);
-      
+
     } catch (err: any) {
-      console.error("Eroare la procesul de salvare:", err);
-      setSubmitError(`A apărut o excepție: ${err?.message || JSON.stringify(err)}`);
+      setSubmitError('A apărut o eroare neașteptată. Te rugăm să încerci din nou.');
     } finally {
       setIsSubmitting(false);
     }

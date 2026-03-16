@@ -1,18 +1,80 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { Ipn } from 'netopia-payment2';
 import { createInvoice } from '@/lib/smartbill/invoice';
 
 // Use server-side Supabase client (not exposed to browser)
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
+  process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 );
+
+// Initialize Netopia IPN verifier
+const posSignature = process.env.NETOPIA_POS_SIGNATURE || '';
+
+function getIpnVerifier() {
+  const publicKey = process.env.NETOPIA_PUBLIC_KEY || '';
+  if (!publicKey || !posSignature) {
+    return null;
+  }
+  return new Ipn({
+    posSignature,
+    posSignatureSet: [posSignature],
+    hashMethod: 'sha512',
+    alg: 'RS512',
+    publicKeyStr: publicKey,
+  });
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    // Get raw body for signature verification
+    const rawBody = await request.text();
 
-    // Netopia sends payment notification data
+    // --- IPN Signature Verification ---
+    const verificationToken = request.headers.get('Verification-token');
+    const ipnVerifier = getIpnVerifier();
+
+    if (ipnVerifier && verificationToken) {
+      try {
+        const verifyResult = await ipnVerifier.verify(verificationToken, rawBody);
+        if (verifyResult.errorType !== 0) {
+          console.error('[IPN] Verification failed:', verifyResult.errorMessage);
+          return NextResponse.json(
+            { errorCode: 1, errorMessage: 'IPN verification failed' },
+            { status: 403 }
+          );
+        }
+        console.log('[IPN] Signature verified successfully');
+      } catch (verifyError: any) {
+        console.error('[IPN] Verification error:', verifyError.message);
+        return NextResponse.json(
+          { errorCode: 1, errorMessage: 'IPN verification error' },
+          { status: 403 }
+        );
+      }
+    } else if (!ipnVerifier) {
+      // Log warning if verification is not configured — allow in sandbox only
+      const isSandbox = process.env.NETOPIA_SANDBOX === 'true';
+      if (!isSandbox) {
+        console.error('[IPN] CRITICAL: IPN verification not configured in production! Rejecting request.');
+        return NextResponse.json(
+          { errorCode: 1, errorMessage: 'IPN verification not configured' },
+          { status: 500 }
+        );
+      }
+      console.warn('[IPN] WARNING: IPN verification not configured (sandbox mode)');
+    } else {
+      // No verification token in request
+      console.error('[IPN] Missing Verification-token header');
+      return NextResponse.json(
+        { errorCode: 1, errorMessage: 'Missing verification token' },
+        { status: 403 }
+      );
+    }
+
+    // Parse the verified body
+    const body = JSON.parse(rawBody);
     const { payment, order } = body;
 
     const orderId = order?.orderID;
@@ -24,10 +86,28 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ errorCode: 1, errorMessage: 'Missing orderID' }, { status: 400 });
     }
 
+    // Verify the order exists in our database before processing
+    const { data: existingOrder, error: fetchError } = await supabaseAdmin
+      .from('orders')
+      .select('id, total_amount, payment_status')
+      .eq('id', orderId)
+      .single();
+
+    if (fetchError || !existingOrder) {
+      console.error('[IPN] Order not found in database:', orderId);
+      return NextResponse.json({ errorCode: 1, errorMessage: 'Order not found' }, { status: 404 });
+    }
+
+    // Don't process if already paid (prevent duplicate processing)
+    if (existingOrder.payment_status === 'paid') {
+      console.log(`[IPN] Order ${orderId} already marked as paid, skipping`);
+      return NextResponse.json({ errorCode: 0, errorMessage: 'OK' });
+    }
+
     // Map Netopia status to our internal status
     let internalStatus = 'pending';
     switch (paymentStatus) {
-      case 3:  // Paid / Confirmed
+      case 3:  // Paid
       case 5:  // Confirmed
         internalStatus = 'paid';
         break;
@@ -49,7 +129,7 @@ export async function POST(request: NextRequest) {
       .eq('id', orderId);
 
     if (error) {
-      console.error('[IPN] Supabase update error:', error);
+      console.error('[IPN] Supabase update error');
     } else {
       console.log(`[IPN] Order ${orderId} updated to: ${internalStatus}`);
     }
@@ -57,7 +137,7 @@ export async function POST(request: NextRequest) {
     // If payment is confirmed, generate Smartbill invoice
     if (internalStatus === 'paid') {
       try {
-        // Fetch order details from Supabase  
+        // Fetch order details from Supabase
         const { data: orderData } = await supabaseAdmin
           .from('orders')
           .select('*')
@@ -111,14 +191,14 @@ export async function POST(request: NextRequest) {
           });
 
           if (invoiceResult.success) {
-            console.log(`[IPN] Smartbill invoice created: ${invoiceResult.series}-${invoiceResult.number}`);
+            console.log(`[IPN] Invoice created: ${invoiceResult.series}-${invoiceResult.number}`);
           } else {
-            console.error('[IPN] Smartbill invoice failed:', invoiceResult.error);
+            console.error('[IPN] Invoice creation failed');
           }
         }
       } catch (invoiceError: any) {
         // Log but don't fail the IPN — factura poate fi emisă manual
-        console.error('[IPN] Invoice generation error:', invoiceError.message);
+        console.error('[IPN] Invoice generation error');
       }
     }
 
@@ -129,11 +209,10 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error: any) {
-    console.error('[IPN] Error processing notification:', error);
+    console.error('[IPN] Error processing notification');
     return NextResponse.json({
       errorCode: 1,
-      errorMessage: error.message,
+      errorMessage: 'Internal processing error',
     }, { status: 500 });
   }
 }
-

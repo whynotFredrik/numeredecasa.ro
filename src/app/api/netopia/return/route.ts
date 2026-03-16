@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
 
-  console.log('[3DS Return] Data:', data);
+  console.log('[3DS Return] Received redirect');
 
   // Redirect user to our thank-you/order-status page
   const redirectUrl = new URL('/comanda-finalizata', request.url);
