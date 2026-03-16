@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export function Footer() {
     return (
@@ -34,7 +35,67 @@ export function Footer() {
                     </ul>
                 </div>
             </div>
-            <div className="container mx-auto px-6 mt-16 pt-8 border-t border-foreground/5 flex flex-col md:flex-row items-center justify-between text-xs text-foreground/40 gap-4">
+
+            {/* ANPC & Payment badges */}
+            <div className="container mx-auto px-6 mt-12 pt-8 border-t border-foreground/5">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                    {/* ANPC badges */}
+                    <div className="flex flex-col sm:flex-row gap-3">
+                        <a
+                            href="https://anpc.ro/ce-este-sal/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:opacity-80 transition-opacity"
+                            title="ANPC – Soluționarea Alternativă a Litigiilor"
+                        >
+                            <Image
+                                src="/anpc-sal.png"
+                                alt="ANPC – Soluționarea Alternativă a Litigiilor"
+                                width={250}
+                                height={50}
+                                className="h-[50px] w-auto"
+                            />
+                        </a>
+                        <a
+                            href="https://ec.europa.eu/consumers/odr"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="hover:opacity-80 transition-opacity"
+                            title="ANPC – Soluționarea Online a Litigiilor"
+                        >
+                            <Image
+                                src="/anpc-sol.png"
+                                alt="ANPC – Soluționarea Online a Litigiilor"
+                                width={250}
+                                height={50}
+                                className="h-[50px] w-auto"
+                            />
+                        </a>
+                    </div>
+                    {/* Netopia payment badge */}
+                    <a
+                        href="https://netopia-payments.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:opacity-80 transition-opacity"
+                        title="Plăți procesate de NETOPIA Payments"
+                    >
+                        <Image
+                            src="/netopia-logo.svg"
+                            alt="NETOPIA Payments – Visa, Mastercard"
+                            width={200}
+                            height={40}
+                            className="h-[40px] w-auto"
+                        />
+                    </a>
+                </div>
+                <p className="text-[11px] text-foreground/30 mt-4 max-w-3xl leading-relaxed">
+                    Măsurile ANPC de informare a consumatorilor cu privire la soluționarea alternativă a litigiilor: Autoritatea Națională pentru Protecția Consumatorilor – <a href="https://anpc.ro/ce-este-sal/" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground/50 transition-colors">SAL</a> / <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground/50 transition-colors">SOL</a>
+                </p>
+            </div>
+
+            {/* Copyright bar */}
+            <div className="container mx-auto px-6 mt-8 pt-8 border-t border-foreground/5 flex flex-col md:flex-row items-center justify-between text-xs text-foreground/40 gap-4">
                 <p>© {new Date().getFullYear()} numeredecasa.ro · SC GUNDAHAR SRL. Toate drepturile rezervate.</p>
                 <div className="flex gap-4">
                     <span>Email: ciobotaru.serban@gmail.com</span>
