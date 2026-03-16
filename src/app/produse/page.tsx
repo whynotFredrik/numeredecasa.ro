@@ -1,9 +1,13 @@
 import Link from 'next/link';
 import { ArrowRight, Home, Building, Briefcase, Sparkles, Shield, Truck } from 'lucide-react';
+import { ProductJsonLd, BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 
 export const metadata = {
-  title: 'Produse — numeredecasa.ro',
-  description: 'Numere stradale premium, numere de apartament și plăcuțe birou personalizate. Configurează-ți produsul live și comandă online.',
+  title: 'Produse — Numere Stradale, Apartament & Plăcuțe Birou',
+  description: 'Numere stradale premium, numere de apartament și plăcuțe birou personalizate. Configurează-ți produsul live și comandă online cu livrare Sameday.',
+  alternates: {
+    canonical: 'https://numarul.ro/produse',
+  },
 };
 
 const products = [
@@ -69,6 +73,30 @@ function ProductIllustration({ type }: { type: string }) {
 export default function ProdusePage() {
   return (
     <main className="min-h-screen pt-24 pb-12 px-6 lg:px-12 bg-foreground/[0.02]">
+      <BreadcrumbJsonLd
+        items={[
+          { name: 'Acasă', url: 'https://numarul.ro' },
+          { name: 'Produse', url: 'https://numarul.ro/produse' },
+        ]}
+      />
+      <ProductJsonLd
+        name="Număr Stradal Premium"
+        description="Numărul tău stradal, conceput ca element arhitectural. Număr mare vizibil deasupra numelui străzii, suspendat pe bară metalică elegantă."
+        price={149}
+        sku="numar-stradal-premium"
+      />
+      <ProductJsonLd
+        name="Număr Apartament"
+        description="Numărul apartamentului tău, într-un format compact dar de impact. Design curat, minimalist, perfect pentru holuri moderne sau clasice."
+        price={99}
+        sku="numar-apartament"
+      />
+      <ProductJsonLd
+        name="Plăcuță Birou"
+        description="Plăcuță nominală pentru biroul tău. Numele deasupra barei de susținere, funcția dedesubt — o carte de vizită permanentă."
+        price={149}
+        sku="placuta-birou"
+      />
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16 space-y-4">
