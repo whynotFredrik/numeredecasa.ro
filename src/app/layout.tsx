@@ -23,17 +23,17 @@ const openSans = Open_Sans({
 
 export const metadata: Metadata = {
   title: {
-    default: "numeredecasa.ro | Numere stradale premium, configurabile online",
-    template: "%s — numeredecasa.ro",
+    default: "numarul.ro | Numere stradale premium, configurabile online",
+    template: "%s — numarul.ro",
   },
   description: "Configurează live și comandă numere stradale, numere de apartament sau plăcuțe birou personalizate. Design premium, fabricat la comandă, livrare Sameday în toată România.",
-  keywords: ["numere casa", "numere stradale", "numar casa", "numar stradal", "placuta birou", "numar apartament", "semnalistica", "numere de casa", "numeredecasa"],
+  keywords: ["numere casa", "numere stradale", "numar casa", "numar stradal", "numarul", "placuta birou", "numar apartament", "semnalistica", "numere de casa", "numarul.ro"],
   authors: [{ name: "SC GUNDAHAR SRL" }],
   openGraph: {
-    title: "numeredecasa.ro — Numere Stradale Premium",
+    title: "numarul.ro — Numere Stradale Premium",
     description: "Configurează-ți propriul număr stradal, de apartament sau plăcuță de birou. Fabricat la comandă, design premium, livrare Sameday.",
-    url: "https://numeredecasa.ro",
-    siteName: "numeredecasa.ro",
+    url: "https://numarul.ro",
+    siteName: "numarul.ro",
     locale: "ro_RO",
     type: "website",
   },
