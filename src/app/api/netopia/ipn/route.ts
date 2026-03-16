@@ -13,10 +13,12 @@ const supabaseAdmin = createClient(
 const posSignature = process.env.NETOPIA_POS_SIGNATURE || '';
 
 function getIpnVerifier() {
-  const publicKey = process.env.NETOPIA_PUBLIC_KEY || '';
-  if (!publicKey || !posSignature) {
+  const rawKey = process.env.NETOPIA_PUBLIC_KEY || '';
+  if (!rawKey || !posSignature) {
     return null;
   }
+  // .env files store multiline values with literal \n — restore actual newlines
+  const publicKey = rawKey.replace(/\\n/g, '\n');
   return new Ipn({
     posSignature,
     posSignatureSet: [posSignature],
