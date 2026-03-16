@@ -6,9 +6,22 @@ export function Footer() {
         <footer className="bg-foreground/[0.02] border-t border-foreground/5 py-12 mt-20">
             <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div className="md:col-span-2">
-                    <h2 className="text-xl font-bold tracking-tighter mb-4">
-                        numere<span className="text-primary italic font-serif">decasa</span>.ro
-                    </h2>
+                    <div className="mb-4">
+                        <Image
+                            src="/logo.svg"
+                            alt="numarul.ro"
+                            width={160}
+                            height={36}
+                            className="h-8 w-auto dark:hidden"
+                        />
+                        <Image
+                            src="/logo-dark.svg"
+                            alt="numarul.ro"
+                            width={160}
+                            height={36}
+                            className="h-8 w-auto hidden dark:block"
+                        />
+                    </div>
                     <p className="text-sm text-foreground/60 max-w-sm leading-relaxed mb-4">
                         Ne specializăm în crearea de adrese vizuale premium. Produse configurabile, fabricate din materiale de înaltă rezistență, menite să redefinească prima impresie a casei tale.
                     </p>
@@ -96,7 +109,7 @@ export function Footer() {
 
             {/* Copyright bar */}
             <div className="container mx-auto px-6 mt-8 pt-8 border-t border-foreground/5 flex flex-col md:flex-row items-center justify-between text-xs text-foreground/40 gap-4">
-                <p>© {new Date().getFullYear()} numeredecasa.ro · SC GUNDAHAR SRL. Toate drepturile rezervate.</p>
+                <p>© {new Date().getFullYear()} numarul.ro · SC GUNDAHAR SRL. Toate drepturile rezervate.</p>
                 <div className="flex gap-4">
                     <span>Email: ciobotaru.serban@gmail.com</span>
                     <span>Tel: 0756 210 895</span>

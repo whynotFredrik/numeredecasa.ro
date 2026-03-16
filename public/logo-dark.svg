@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 80" width="360" height="80">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;800&amp;display=swap');
+    .num { font-family: 'Inter', system-ui, -apple-system, sans-serif; font-weight: 800; font-size: 46px; letter-spacing: -2.5px; fill: #f8fafc; }
+    .arul { font-family: 'Inter', system-ui, -apple-system, sans-serif; font-weight: 300; font-size: 46px; letter-spacing: -2.5px; fill: rgba(248,250,252,0.35); }
+    .dot { font-family: 'Inter', system-ui, -apple-system, sans-serif; font-weight: 800; font-size: 46px; fill: #f59e0b; }
+    .ro { font-family: 'Inter', system-ui, -apple-system, sans-serif; font-weight: 300; font-size: 46px; letter-spacing: -2.5px; fill: rgba(248,250,252,0.2); }
+  </style>
+  <text y="55">
+    <tspan class="num">num</tspan><tspan class="arul">arul</tspan><tspan class="dot">.</tspan><tspan class="ro">ro</tspan>
+  </text>
+</svg>

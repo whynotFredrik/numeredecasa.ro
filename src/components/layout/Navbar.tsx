@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { ShoppingBag, Menu, X } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { useEffect, useState } from 'react';
@@ -17,8 +18,23 @@ export function Navbar() {
     return (
         <header className="fixed top-0 inset-x-0 z-50 bg-background/80 backdrop-blur-md border-b border-foreground/5">
             <div className="container mx-auto px-6 h-16 flex items-center justify-between">
-                <Link href="/" className="text-xl font-bold tracking-tighter">
-                    numere<span className="text-primary italic font-serif">decasa</span>.ro
+                <Link href="/" className="flex items-center">
+                    <Image
+                        src="/logo.svg"
+                        alt="numarul.ro"
+                        width={140}
+                        height={32}
+                        className="h-7 w-auto dark:hidden"
+                        priority
+                    />
+                    <Image
+                        src="/logo-dark.svg"
+                        alt="numarul.ro"
+                        width={140}
+                        height={32}
+                        className="h-7 w-auto hidden dark:block"
+                        priority
+                    />
                 </Link>
 
                 <nav className="hidden md:flex flex-1 justify-center gap-8">
