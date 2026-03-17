@@ -3,7 +3,7 @@
  * Documentație: https://ws.woot.ro/latest/
  */
 
-const WOOT_API_BASE = 'https://ws.woot.ro';
+const WOOT_API_BASE = 'https://ws.woot.ro/latest';
 
 let cachedToken: string | null = null;
 let tokenExpiresAt = 0;
@@ -24,6 +24,9 @@ async function getToken(): Promise<string> {
     throw new Error('WOOT_PUBLIC_KEY și WOOT_SECRET_KEY trebuie configurate în .env.local');
   }
 
+  // Log the request for debugging
+  console.log('[WOOT Auth] Attempting auth to:', `${WOOT_API_BASE}/account/authorize`);
+
   const res = await fetch(`${WOOT_API_BASE}/account/authorize`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -33,24 +36,38 @@ async function getToken(): Promise<string> {
     }),
   });
 
+  // Log full response for debugging
+  const responseText = await res.text();
+  console.log(`[WOOT Auth] Response status: ${res.status}, body: ${responseText.slice(0, 500)}`);
+
   if (res.status === 429) {
     throw new Error('Prea multe încercări de autentificare WOOT. Încearcă mai târziu.');
   }
 
   if (!res.ok) {
-    throw new Error('Autentificare WOOT eșuată. Verifică cheile API.');
+    throw new Error(`Autentificare WOOT eșuată (HTTP ${res.status}): ${responseText.slice(0, 200)}`);
   }
 
-  const data = await res.json();
-
-  if (!data.success || !data.token) {
-    throw new Error('Răspuns autentificare WOOT invalid.');
+  let data: any;
+  try {
+    data = JSON.parse(responseText);
+  } catch {
+    throw new Error(`Răspuns autentificare WOOT invalid (nu e JSON): ${responseText.slice(0, 200)}`);
   }
 
-  cachedToken = data.token;
-  // Token expires in `data.expire` seconds (default 86400 = 24h)
-  tokenExpiresAt = Date.now() + (data.expire || 86400) * 1000;
+  console.log('[WOOT Auth] Parsed response keys:', Object.keys(data));
 
+  // Flexible token extraction — handle various response shapes
+  const token = data.token || data.access_token || data.data?.token;
+  if (!token) {
+    throw new Error(`Răspuns autentificare WOOT: nu conține token. Keys: ${Object.keys(data).join(', ')}`);
+  }
+
+  cachedToken = token;
+  const expireSeconds = data.expire || data.expires_in || data.data?.expire || 86400;
+  tokenExpiresAt = Date.now() + expireSeconds * 1000;
+
+  console.log('[WOOT Auth] Token obtained, expires in', expireSeconds, 'seconds');
   return cachedToken!;
 }
 
@@ -69,6 +86,8 @@ async function wootFetch(
       if (value) url.searchParams.set(key, value);
     });
   }
+
+  console.log(`[WOOT Fetch] ${options.method || 'GET'} ${url.toString()}`);
 
   const res = await fetch(url.toString(), {
     method: options.method || 'GET',
@@ -95,15 +114,17 @@ async function wootFetch(
     });
 
     if (!retryRes.ok) {
-      throw new Error(`WOOT API error: ${retryRes.status}`);
+      const body = await retryRes.text().catch(() => '');
+      throw new Error(`WOOT API error: ${retryRes.status} — ${body.slice(0, 200)}`);
     }
 
     return retryRes.json();
   }
 
   if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
-    throw new Error(errorData?.error || `WOOT API error: ${res.status}`);
+    const body = await res.text().catch(() => '');
+    console.error(`[WOOT Fetch] Error ${res.status} for ${path}:`, body.slice(0, 300));
+    throw new Error(`WOOT API error ${res.status}: ${body.slice(0, 200)}`);
   }
 
   return res.json();
@@ -111,8 +132,10 @@ async function wootFetch(
 
 // ─── General Endpoints ───
 
-export async function getCounties() {
-  return wootFetch('/general/counties');
+export async function getCounties(countryId?: string) {
+  return wootFetch('/general/counties', {
+    params: countryId ? { country_id: countryId } : {},
+  });
 }
 
 export async function getLocalities(countyId: string) {
@@ -127,20 +150,26 @@ export async function getCities(countyId: string) {
   });
 }
 
-export async function getLockerList(filters?: {
+/**
+ * GET /general/locations — Returns pickup/delivery locations (lockers, easybox points, etc.)
+ * Params: country_id, city_id, courier_id, county_id, sender (bool), receiver (bool)
+ */
+export async function getLocations(filters?: {
+  countryId?: string;
   countyId?: string;
   cityId?: string;
   courierId?: string;
-  lockType?: string;
-  hasDelivery?: string;
+  sender?: boolean;
+  receiver?: boolean;
 }) {
-  return wootFetch('/general/lockerList', {
+  return wootFetch('/general/locations', {
     params: {
+      ...(filters?.countryId ? { country_id: filters.countryId } : {}),
       ...(filters?.countyId ? { county_id: filters.countyId } : {}),
       ...(filters?.cityId ? { city_id: filters.cityId } : {}),
       ...(filters?.courierId ? { courier_id: filters.courierId } : {}),
-      ...(filters?.lockType ? { lockType: filters.lockType } : {}),
-      ...(filters?.hasDelivery ? { hasDelivery: filters.hasDelivery } : {}),
+      ...(filters?.sender !== undefined ? { sender: String(filters.sender) } : {}),
+      ...(filters?.receiver !== undefined ? { receiver: String(filters.receiver) } : {}),
     } as Record<string, string>,
   });
 }

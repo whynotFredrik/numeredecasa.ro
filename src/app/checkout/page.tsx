@@ -5,7 +5,7 @@ import { useCartStore } from '@/store/cartStore';
 import { motion } from 'framer-motion';
 import { ChevronRight, CreditCard, Truck, ShieldCheck, MapPin, Package, Check, Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { LockerPicker, type LockerData } from '@/components/checkout/LockerPicker';
+import { LockerMapPicker, type LockerData } from '@/components/checkout/LockerMapPicker';
 import { supabase } from '@/lib/supabase/client';
 
 export default function CheckoutPage() {
@@ -270,7 +270,7 @@ export default function CheckoutPage() {
                       <input type="text" value={address} onChange={e => setAddress(e.target.value)} placeholder="Adresă Completă (Stradă, Nr, Bloc, Sc, Ap)" className="w-full bg-foreground/[0.02] border border-foreground/10 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none md:col-span-2" required={shippingMethod === 'courier'} />
                     </div>
                   ) : (
-                    <LockerPicker
+                    <LockerMapPicker
                       selectedLocker={selectedLocker}
                       onLockerSelect={setSelectedLocker}
                     />

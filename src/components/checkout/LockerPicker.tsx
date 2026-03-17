@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { MapPin, CheckCircle2, Loader2, Search, Package } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { MapPin, CheckCircle2, Loader2, Search, Package, AlertTriangle } from 'lucide-react';
 
 export interface LockerData {
   id: string;
@@ -17,30 +17,35 @@ interface LockerPickerProps {
   selectedLocker: LockerData | null;
 }
 
-interface County {
-  id: number;
-  name: string;
-}
-
-interface City {
-  id: number;
-  name: string;
-}
-
-interface Locker {
-  id: string;
-  name: string;
-  address: string;
-  city_name: string;
-  county_name: string;
-  courier_name: string;
+// WOOT API may return various field names — we normalize them
+interface RawItem {
   [key: string]: any;
 }
 
+function normalizeId(item: RawItem): string {
+  return String(item.id ?? item.county_id ?? item.city_id ?? item.locker_id ?? '');
+}
+
+function normalizeName(item: RawItem): string {
+  return String(item.name ?? item.county_name ?? item.city_name ?? item.locker_name ?? '');
+}
+
+function normalizeList(data: any): RawItem[] {
+  if (Array.isArray(data)) return data;
+  if (data?.list && Array.isArray(data.list)) return data.list;
+  if (data?.data && Array.isArray(data.data)) return data.data;
+  // If it's an object with numeric keys (like {0: {...}, 1: {...}})
+  if (typeof data === 'object' && data !== null && !data.error) {
+    const values = Object.values(data);
+    if (values.length > 0 && typeof values[0] === 'object') return values as RawItem[];
+  }
+  return [];
+}
+
 export function LockerPicker({ onLockerSelect, selectedLocker }: LockerPickerProps) {
-  const [counties, setCounties] = useState<County[]>([]);
-  const [cities, setCities] = useState<City[]>([]);
-  const [lockers, setLockers] = useState<Locker[]>([]);
+  const [counties, setCounties] = useState<RawItem[]>([]);
+  const [cities, setCities] = useState<RawItem[]>([]);
+  const [lockers, setLockers] = useState<RawItem[]>([]);
 
   const [selectedCountyId, setSelectedCountyId] = useState('');
   const [selectedCityId, setSelectedCityId] = useState('');
@@ -54,11 +59,19 @@ export function LockerPicker({ onLockerSelect, selectedLocker }: LockerPickerPro
   // Load counties on mount
   useEffect(() => {
     setLoadingCounties(true);
+    setError('');
     fetch('/api/woot/counties')
       .then((res) => res.json())
       .then((data) => {
-        // API returns array or object with list
-        const list = Array.isArray(data) ? data : data?.list || data?.data || [];
+        if (data.error) {
+          setError(data.error);
+          return;
+        }
+        const list = normalizeList(data);
+        console.log('[LockerPicker] Counties loaded:', list.length, 'items');
+        if (list.length > 0) {
+          console.log('[LockerPicker] Sample county:', JSON.stringify(list[0]).slice(0, 200));
+        }
         setCounties(list);
       })
       .catch(() => setError('Nu s-au putut încărca județele.'))
@@ -67,22 +80,26 @@ export function LockerPicker({ onLockerSelect, selectedLocker }: LockerPickerPro
 
   // Load cities when county changes
   useEffect(() => {
-    if (!selectedCountyId) {
-      setCities([]);
-      setLockers([]);
-      return;
-    }
-
-    setLoadingCities(true);
     setCities([]);
     setSelectedCityId('');
     setLockers([]);
+    setSearchTerm('');
     onLockerSelect(null);
+
+    if (!selectedCountyId) return;
+
+    setLoadingCities(true);
+    setError('');
 
     fetch(`/api/woot/cities?county_id=${selectedCountyId}`)
       .then((res) => res.json())
       .then((data) => {
-        const list = Array.isArray(data) ? data : data?.list || data?.data || [];
+        if (data.error) {
+          setError(data.error);
+          return;
+        }
+        const list = normalizeList(data);
+        console.log('[LockerPicker] Cities loaded:', list.length, 'for county', selectedCountyId);
         setCities(list);
       })
       .catch(() => setError('Nu s-au putut încărca localitățile.'))
@@ -91,41 +108,61 @@ export function LockerPicker({ onLockerSelect, selectedLocker }: LockerPickerPro
 
   // Load lockers when city changes
   useEffect(() => {
-    if (!selectedCityId) {
-      setLockers([]);
-      return;
-    }
+    setLockers([]);
+    setSearchTerm('');
+    onLockerSelect(null);
+
+    if (!selectedCityId) return;
 
     setLoadingLockers(true);
-    setLockers([]);
-    onLockerSelect(null);
+    setError('');
 
     fetch(`/api/woot/lockers?county_id=${selectedCountyId}&city_id=${selectedCityId}`)
       .then((res) => res.json())
       .then((data) => {
-        const list = Array.isArray(data) ? data : data?.list || data?.data || [];
+        if (data.error) {
+          console.warn('[LockerPicker] Locker error:', data.error);
+          // Don't show error for "no lockers" — just show empty state
+          if (data.error.includes('404') || data.error.includes('not found')) {
+            setLockers([]);
+          } else {
+            setError(data.error);
+          }
+          return;
+        }
+        const list = normalizeList(data);
+        console.log('[LockerPicker] Lockers loaded:', list.length, 'for city', selectedCityId);
+        if (list.length > 0) {
+          console.log('[LockerPicker] Sample locker:', JSON.stringify(list[0]).slice(0, 300));
+        }
         setLockers(list);
       })
       .catch(() => setError('Nu s-au putut încărca lockerele.'))
       .finally(() => setLoadingLockers(false));
   }, [selectedCityId]);
 
+  const getLockerName = (l: RawItem) => String(l.name || l.locker_name || '');
+  const getLockerAddress = (l: RawItem) => String(l.address || l.locker_address || '');
+  const getLockerCity = (l: RawItem) => String(l.city_name || l.city || '');
+  const getLockerCounty = (l: RawItem) => String(l.county_name || l.county || '');
+  const getLockerCourier = (l: RawItem) => String(l.courier_name || l.courier || '');
+
   const filteredLockers = searchTerm
     ? lockers.filter(
         (l) =>
-          (l.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
-          (l.address || '').toLowerCase().includes(searchTerm.toLowerCase())
+          getLockerName(l).toLowerCase().includes(searchTerm.toLowerCase()) ||
+          getLockerAddress(l).toLowerCase().includes(searchTerm.toLowerCase())
       )
     : lockers;
 
-  const handleSelectLocker = (locker: Locker) => {
+  const handleSelectLocker = (locker: RawItem) => {
     onLockerSelect({
-      id: locker.id?.toString() || '',
-      name: locker.name || '',
-      address: locker.address || '',
-      city: locker.city_name || locker.city || '',
-      county: locker.county_name || locker.county || '',
-      courier_name: locker.courier_name || locker.courier || '',
+      id: normalizeId(locker),
+      name: getLockerName(locker),
+      address: getLockerAddress(locker),
+      city: getLockerCity(locker),
+      county: getLockerCounty(locker),
+      courier_name: getLockerCourier(locker),
     });
   };
 
@@ -169,8 +206,16 @@ export function LockerPicker({ onLockerSelect, selectedLocker }: LockerPickerPro
   return (
     <div className="space-y-4 animate-in fade-in">
       {error && (
-        <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-600 rounded-xl text-sm text-center">
-          {error}
+        <div className="p-3 bg-amber-500/10 border border-amber-500/20 text-amber-700 rounded-xl text-sm flex items-center gap-2">
+          <AlertTriangle className="w-4 h-4 shrink-0" />
+          <span>{error}</span>
+          <button
+            type="button"
+            onClick={() => setError('')}
+            className="ml-auto text-xs underline hover:no-underline"
+          >
+            Închide
+          </button>
         </div>
       )}
 
@@ -180,16 +225,19 @@ export function LockerPicker({ onLockerSelect, selectedLocker }: LockerPickerPro
           <label className="text-sm font-semibold text-foreground/70">Județ</label>
           <select
             value={selectedCountyId}
-            onChange={(e) => setSelectedCountyId(e.target.value)}
+            onChange={(e) => {
+              setError('');
+              setSelectedCountyId(e.target.value);
+            }}
             disabled={loadingCounties}
             className="w-full bg-foreground/[0.02] border border-foreground/10 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none transition-all appearance-none"
           >
             <option value="">
               {loadingCounties ? 'Se încarcă...' : 'Selectează județul'}
             </option>
-            {counties.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
+            {counties.map((c, i) => (
+              <option key={normalizeId(c) || i} value={normalizeId(c)}>
+                {normalizeName(c)}
               </option>
             ))}
           </select>
@@ -200,16 +248,19 @@ export function LockerPicker({ onLockerSelect, selectedLocker }: LockerPickerPro
           <label className="text-sm font-semibold text-foreground/70">Localitate</label>
           <select
             value={selectedCityId}
-            onChange={(e) => setSelectedCityId(e.target.value)}
+            onChange={(e) => {
+              setError('');
+              setSelectedCityId(e.target.value);
+            }}
             disabled={!selectedCountyId || loadingCities}
             className="w-full bg-foreground/[0.02] border border-foreground/10 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none transition-all appearance-none disabled:opacity-50"
           >
             <option value="">
               {loadingCities ? 'Se încarcă...' : 'Selectează localitatea'}
             </option>
-            {cities.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
+            {cities.map((c, i) => (
+              <option key={normalizeId(c) || i} value={normalizeId(c)}>
+                {normalizeName(c)}
               </option>
             ))}
           </select>
@@ -248,7 +299,7 @@ export function LockerPicker({ onLockerSelect, selectedLocker }: LockerPickerPro
               <div className="max-h-[280px] overflow-y-auto space-y-2 pr-1">
                 {filteredLockers.map((locker, idx) => (
                   <button
-                    key={locker.id || idx}
+                    key={normalizeId(locker) || idx}
                     type="button"
                     onClick={() => handleSelectLocker(locker)}
                     className="w-full text-left p-4 rounded-xl border border-foreground/10 hover:border-primary/40 hover:bg-primary/5 transition-all group"
@@ -257,12 +308,12 @@ export function LockerPicker({ onLockerSelect, selectedLocker }: LockerPickerPro
                       <MapPin className="w-5 h-5 text-foreground/40 group-hover:text-primary mt-0.5 shrink-0" />
                       <div>
                         <p className="font-semibold text-sm group-hover:text-primary transition-colors">
-                          {locker.name}
+                          {getLockerName(locker)}
                         </p>
-                        <p className="text-foreground/60 text-xs mt-0.5">{locker.address}</p>
-                        {locker.courier_name && (
+                        <p className="text-foreground/60 text-xs mt-0.5">{getLockerAddress(locker)}</p>
+                        {getLockerCourier(locker) && (
                           <p className="text-foreground/40 text-xs mt-0.5">
-                            {locker.courier_name}
+                            {getLockerCourier(locker)}
                           </p>
                         )}
                       </div>
