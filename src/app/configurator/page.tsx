@@ -296,7 +296,7 @@ export default function Configurator() {
                 <ShoppingCart className="w-5 h-5" />
                 Adaugă în Coș
               </button>
-              <p className="text-center text-xs text-foreground/50">Livrare prin Sameday în 4-6 zile lucrătoare, cu excepția comenzilor ce depășesc cantitatea alocată predefinită.</p>
+              <p className="text-center text-xs text-foreground/50">Livrare în 4-6 zile lucrătoare prin curier sau locker, în toată România.</p>
             </div>
           </div>
         </div>

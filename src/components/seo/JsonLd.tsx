@@ -45,7 +45,7 @@ export function LocalBusinessJsonLd() {
     logo: "https://numarul.ro/logo.svg",
     image: "https://numarul.ro/hero-ro.png",
     description:
-      "Numere stradale premium, configurabile online. Design premium, fabricat la comandă, livrare Sameday în toată România.",
+      "Numere stradale premium, configurabile online. Design premium, fabricat la comandă, livrare rapidă în toată România.",
     address: {
       "@type": "PostalAddress",
       streetAddress: "Str. Feleacului 14",

@@ -4,7 +4,7 @@ import { ProductJsonLd, BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 
 export const metadata = {
   title: 'Produse — Numere Stradale, Apartament & Plăcuțe Birou',
-  description: 'Numere stradale premium, numere de apartament și plăcuțe birou personalizate. Configurează-ți produsul live și comandă online cu livrare Sameday.',
+  description: 'Numere stradale premium, numere de apartament și plăcuțe birou personalizate. Configurează-ți produsul live și comandă online cu livrare rapidă în toată România.',
   alternates: {
     canonical: 'https://numarul.ro/produse',
   },
@@ -108,7 +108,7 @@ export default function ProdusePage() {
             Toate <span className="text-primary italic font-serif">Produsele</span> Noastre
           </h1>
           <p className="text-foreground/60 max-w-2xl mx-auto text-lg">
-            Fiecare produs este configurat de tine, fabricat cu precizie și livrat la ușa ta prin Sameday.
+            Fiecare produs este configurat de tine, fabricat cu precizie și livrat la ușa ta în toată România.
           </p>
         </div>
 
@@ -164,7 +164,7 @@ export default function ProdusePage() {
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
             { icon: Shield, title: 'Garanție Calitate', desc: 'Materiale certificate, rezistente la UV și intemperii.' },
-            { icon: Truck, title: 'Livrare Sameday', desc: 'Curier la domiciliu sau ridicare din Easybox.' },
+            { icon: Truck, title: 'Livrare Rapidă', desc: 'Curier la domiciliu sau ridicare din locker, în toată România.' },
             { icon: Sparkles, title: 'Fabricat La Comandă', desc: 'Fiecare produs este unic, configurat de tine.' },
           ].map((badge, i) => (
             <div key={i} className="flex gap-4 p-6 rounded-2xl bg-background border border-foreground/5">

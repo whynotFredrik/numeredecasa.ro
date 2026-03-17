@@ -181,7 +181,7 @@ export async function POST(request: NextRequest) {
               })),
               // Add shipping as a separate line item
               {
-                name: `Transport ${orderData.shipping_method === 'courier' ? 'Curier Sameday' : 'Sameday Easybox'}`,
+                name: `Transport ${orderData.shipping_method === 'courier' ? 'Curier la domiciliu' : 'Locker'}`,
                 code: 'TRANSPORT',
                 quantity: 1,
                 price: parseFloat(orderData.shipping_amount),

@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Configurator — Personalizează-ți Numărul Stradal",
   description:
-    "Configurează live numărul tău stradal, de apartament sau plăcuța de birou. Previzualizare instant, culori și texte personalizabile. Comandă online cu livrare Sameday.",
+    "Configurează live numărul tău stradal, de apartament sau plăcuța de birou. Previzualizare instant, culori și texte personalizabile. Comandă online cu livrare rapidă în toată România.",
   alternates: {
     canonical: "https://numarul.ro/configurator",
   },

@@ -5,14 +5,14 @@ import { useCartStore } from '@/store/cartStore';
 import { motion } from 'framer-motion';
 import { ChevronRight, CreditCard, Truck, ShieldCheck, MapPin, Package, Check, Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { SamedayWidget } from '@/components/checkout/SamedayWidget';
+import { LockerPicker, type LockerData } from '@/components/checkout/LockerPicker';
 import { supabase } from '@/lib/supabase/client';
 
 export default function CheckoutPage() {
   const { items, getCartTotal, getCartCount, clearCart } = useCartStore();
   const [mounted, setMounted] = useState(false);
   const [shippingMethod, setShippingMethod] = useState<'courier' | 'easybox'>('courier');
-  const [selectedLocker, setSelectedLocker] = useState<any>(null);
+  const [selectedLocker, setSelectedLocker] = useState<LockerData | null>(null);
 
   // Form states
   const [firstName, setFirstName] = useState('');
@@ -63,7 +63,7 @@ export default function CheckoutPage() {
     setSubmitError('');
 
     if (shippingMethod === 'easybox' && !selectedLocker) {
-      setSubmitError('Te rugăm să selectezi un Easybox pentru a putea continua.');
+      setSubmitError('Te rugăm să selectezi un locker pentru a putea continua.');
       return;
     }
 
@@ -82,10 +82,10 @@ export default function CheckoutPage() {
           customer_email: email,
           customer_phone: phone,
           shipping_method: shippingMethod,
-          shipping_county: shippingMethod === 'courier' ? county : selectedLocker.county,
-          shipping_city: shippingMethod === 'courier' ? city : selectedLocker.city,
-          shipping_address: shippingMethod === 'courier' ? address : selectedLocker.address,
-          easybox_id: shippingMethod === 'easybox' ? selectedLocker.easyboxId : null,
+          shipping_county: shippingMethod === 'courier' ? county : selectedLocker?.county || '',
+          shipping_city: shippingMethod === 'courier' ? city : selectedLocker?.city || '',
+          shipping_address: shippingMethod === 'courier' ? address : selectedLocker?.address || '',
+          easybox_id: shippingMethod === 'easybox' ? selectedLocker?.id || null : null,
           subtotal_amount: total,
           shipping_amount: shippingCost,
           total_amount: grandTotal,
@@ -255,7 +255,7 @@ export default function CheckoutPage() {
                   >
                     <MapPin className={`w-6 h-6 ${shippingMethod === 'easybox' ? 'text-primary' : 'text-foreground/50'}`} />
                     <div>
-                      <div className="font-bold">Sameday Easybox</div>
+                      <div className="font-bold">Locker / Easybox</div>
                       <div className="text-sm text-foreground/60">Ridicare din locker</div>
                       <div className="text-sm font-bold mt-1 text-primary">15.00 RON</div>
                     </div>
@@ -270,9 +270,9 @@ export default function CheckoutPage() {
                       <input type="text" value={address} onChange={e => setAddress(e.target.value)} placeholder="Adresă Completă (Stradă, Nr, Bloc, Sc, Ap)" className="w-full bg-foreground/[0.02] border border-foreground/10 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none md:col-span-2" required={shippingMethod === 'courier'} />
                     </div>
                   ) : (
-                    <SamedayWidget 
-                      selectedLocker={selectedLocker} 
-                      onLockerSelect={setSelectedLocker} 
+                    <LockerPicker
+                      selectedLocker={selectedLocker}
+                      onLockerSelect={setSelectedLocker}
                     />
                   )}
                 </div>

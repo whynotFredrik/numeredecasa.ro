@@ -45,7 +45,7 @@ export default function ConfidentialitatePage() {
         <h2>5. Cui Transmitem Datele</h2>
         <p>Datele personale pot fi transmise către:</p>
         <ul>
-          <li><strong>Sameday Courier SRL</strong> — pentru livrarea coletelor</li>
+          <li><strong>WOOT (woot.ro)</strong> — broker de expediții, pentru livrarea coletelor</li>
           <li><strong>Procesatorul de plăți</strong> — pentru procesarea tranzacțiilor securizate</li>
           <li><strong>Supabase Inc.</strong> — pentru stocarea securizată a datelor comenzilor</li>
         </ul>

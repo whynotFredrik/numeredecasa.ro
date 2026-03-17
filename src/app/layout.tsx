@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     template: "%s — numarul.ro",
   },
   description:
-    "Configurează live și comandă numere stradale, numere de apartament sau plăcuțe birou personalizate. Design premium, fabricat la comandă, livrare Sameday în toată România.",
+    "Configurează live și comandă numere stradale, numere de apartament sau plăcuțe birou personalizate. Design premium, fabricat la comandă, livrare rapidă în toată România.",
   keywords: [
     "numere casa",
     "numere stradale",
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "numarul.ro — Numere Stradale Premium",
     description:
-      "Configurează-ți propriul număr stradal, de apartament sau plăcuță de birou. Fabricat la comandă, design premium, livrare Sameday.",
+      "Configurează-ți propriul număr stradal, de apartament sau plăcuță de birou. Fabricat la comandă, design premium, livrare rapidă.",
     url: "https://numarul.ro",
     siteName: "numarul.ro",
     locale: "ro_RO",
@@ -74,7 +74,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "numarul.ro — Numere Stradale Premium",
     description:
-      "Configurează-ți propriul număr stradal, de apartament sau plăcuță de birou. Fabricat la comandă, design premium, livrare Sameday.",
+      "Configurează-ți propriul număr stradal, de apartament sau plăcuță de birou. Fabricat la comandă, design premium, livrare rapidă.",
     images: ["/og-image.jpg"],
   },
   robots: {

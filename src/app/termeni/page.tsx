@@ -32,7 +32,7 @@ export default function TermeniPage() {
         <p>Prețurile afișate pe site includ TVA. Costul livrării este calculat separat și este afișat în pagina de Checkout înainte de finalizarea comenzii. Plata se face online prin procesatorul de plăți securizat.</p>
 
         <h2>5. Livrare</h2>
-        <p>Livrarea se realizează prin serviciul de curierat Sameday (curier la domiciliu sau Easybox). Detalii complete se regăsesc în <a href="/livrare">Politica de Livrare</a>.</p>
+        <p>Livrarea se realizează prin platforma WOOT (woot.ro), care colaborează cu mai mulți curieri (curier la domiciliu sau locker). Detalii complete se regăsesc în <a href="/livrare">Politica de Livrare</a>.</p>
 
         <h2>6. Dreptul de Retragere</h2>
         <p>Conform OUG 34/2014, produsele fabricate la comandă, personalizate conform specificațiilor cumpărătorului, sunt exceptate de la dreptul de retragere de 14 zile. Cu toate acestea, în cazul unor defecte de fabricație, Vânzătorul se angajează să remedieze sau înlocuiască produsul. Detalii în <a href="/retur">Politica de Retur</a>.</p>

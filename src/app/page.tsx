@@ -80,7 +80,7 @@ export default function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
-            { icon: Box, title: "Livrare Rapidă Easybox", desc: "Primești comanda prin rețeaua națională Sameday, direct la Easybox-ul preferat." },
+            { icon: Box, title: "Livrare Rapidă", desc: "Primești comanda prin curier la domiciliu sau direct la locker-ul preferat, în toată România." },
             { icon: Layers, title: "Materiale Premium", desc: "Folosim doar texturi rezistente la raze UV și intemperii, alese special pentru fațade." },
             { icon: MousePointer2, title: "Ajustează Live", desc: "Vizualizează cum va arăta numărul casei înainte să adaugi produsul în coș." }
           ].map((feat, i) => (

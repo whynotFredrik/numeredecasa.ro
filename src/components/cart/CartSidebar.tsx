@@ -149,7 +149,7 @@ export function CartSidebar() {
                   <span className="font-bold">{getCartTotal()} RON</span>
                 </div>
                 <div className="flex justify-between items-center text-sm mb-4">
-                  <span className="text-foreground/60">Livrare Sameday</span>
+                  <span className="text-foreground/60">Livrare</span>
                   <span className="font-medium text-green-600">Calculat la finalizare</span>
                 </div>
                 <div className="flex justify-between items-center text-lg">
