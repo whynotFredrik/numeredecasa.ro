@@ -1,8 +1,8 @@
 import { ShieldCheck } from 'lucide-react';
 
 export const metadata = {
-  title: 'Politica de Confidențialitate — numeredecasa.ro',
-  description: 'Politica de confidențialitate și protecția datelor personale (GDPR) pentru numeredecasa.ro.',
+  title: 'Politica de Confidențialitate — numarul.ro',
+  description: 'Politica de confidențialitate și protecția datelor personale (GDPR) pentru numarul.ro.',
 };
 
 export default function ConfidentialitatePage() {
@@ -19,7 +19,7 @@ export default function ConfidentialitatePage() {
         <p className="text-foreground/60 text-sm">Ultima actualizare: 12 martie 2026</p>
 
         <h2>1. Operatorul de Date</h2>
-        <p><strong>SC GUNDAHAR SRL</strong>, CUI 36704546, cu sediul în Str. Feleacului 14, Oradea, România, este operatorul datelor cu caracter personal colectate prin intermediul site-ului numeredecasa.ro.</p>
+        <p><strong>SC GUNDAHAR SRL</strong>, CUI 36704546, cu sediul în Str. Feleacului 14, Oradea, România, este operatorul datelor cu caracter personal colectate prin intermediul site-ului numarul.ro.</p>
 
         <h2>2. Ce Date Colectăm</h2>
         <p>Colectăm următoarele date cu caracter personal, necesare procesării comenzilor:</p>

@@ -1,8 +1,8 @@
 import { RotateCcw } from 'lucide-react';
 
 export const metadata = {
-  title: 'Politica de Retur — numeredecasa.ro',
-  description: 'Politica de retur și garanție pentru produsele achiziționate de pe numeredecasa.ro.',
+  title: 'Politica de Retur — numarul.ro',
+  description: 'Politica de retur și garanție pentru produsele achiziționate de pe numarul.ro.',
 };
 
 export default function ReturPage() {
@@ -19,7 +19,7 @@ export default function ReturPage() {
         <p className="text-foreground/60 text-sm">Ultima actualizare: 12 martie 2026</p>
 
         <h2>1. Produse Fabricate la Comandă</h2>
-        <p>Toate produsele comercializate pe numeredecasa.ro sunt <strong>fabricate la comandă</strong>, conform configurației personalizate alese de fiecare client (număr, text, culoare, tip).</p>
+        <p>Toate produsele comercializate pe numarul.ro sunt <strong>fabricate la comandă</strong>, conform configurației personalizate alese de fiecare client (număr, text, culoare, tip).</p>
         <p>Conform <strong>Art. 16 lit. c) din OUG 34/2014</strong>, dreptul de retragere nu se aplică produselor realizate după specificațiile consumatorului sau personalizate în mod clar.</p>
 
         <h2>2. Defecte de Fabricație</h2>

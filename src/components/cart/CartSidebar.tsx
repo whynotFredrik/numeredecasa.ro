@@ -6,6 +6,20 @@ import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
+const finishBgMap: Record<string, string> = {
+  black: 'bg-[#1a1a1a]',
+  white: 'bg-white',
+  brown: 'bg-[#5C3A21]',
+  lightgray: 'bg-[#B0B0B0]',
+};
+
+const finishNameMap: Record<string, string> = {
+  black: 'Negru Texturat',
+  white: 'Alb Satinat',
+  brown: 'Maro Texturat',
+  lightgray: 'Gri Deschis Satinat',
+};
+
 export function CartSidebar() {
   const { isCartOpen, setCartOpen, items, updateQuantity, removeItem, getCartTotal } = useCartStore();
   const [mounted, setMounted] = useState(false);
@@ -77,20 +91,20 @@ export function CartSidebar() {
                          {item.productType === 'house' && (
                            <>
                              <div className="text-2xl font-bold leading-none">{item.mainNumber}</div>
-                             <div className={`w-full h-1 mt-1 mb-1 ${item.finish === 'black' ? 'bg-[#1a1a1a]' : 'bg-white'}`}></div>
+                             <div className={`w-full h-1 mt-1 mb-1 ${finishBgMap[item.finish] || 'bg-[#1a1a1a]'}`}></div>
                              <div className="text-[0.5rem] font-bold tracking-widest">{item.streetName}</div>
                            </>
                          )}
                          {item.productType === 'apartment' && (
                            <>
                              <div className="text-2xl font-bold leading-none">{item.mainNumber}</div>
-                             <div className={`w-3/4 h-1 mt-1 ${item.finish === 'black' ? 'bg-[#1a1a1a]' : 'bg-white'}`}></div>
+                             <div className={`w-3/4 h-1 mt-1 ${finishBgMap[item.finish] || 'bg-[#1a1a1a]'}`}></div>
                            </>
                          )}
                          {item.productType === 'office' && (
                            <>
                              <div className="text-[0.6rem] font-bold">{item.officeName}</div>
-                             <div className={`w-full h-1 mt-0.5 mb-0.5 ${item.finish === 'black' ? 'bg-[#1a1a1a]' : 'bg-white'}`}></div>
+                             <div className={`w-full h-1 mt-0.5 mb-0.5 ${finishBgMap[item.finish] || 'bg-[#1a1a1a]'}`}></div>
                              <div className="text-[0.4rem]">{item.officeFunction}</div>
                            </>
                          )}
@@ -100,10 +114,10 @@ export function CartSidebar() {
                     <div className="flex-1 flex flex-col justify-between">
                       <div>
                         <h3 className="font-bold text-sm">
-                          Model Signature - {item.productType === 'house' ? 'Case' : item.productType === 'apartment' ? 'Apartamente' : 'Birouri'}
+                          Plăcuță {item.productType === 'house' ? 'Casă' : item.productType === 'apartment' ? 'Apartament' : 'Birou'}
                         </h3>
                         <p className="text-xs text-foreground/60 capitalize mt-1">
-                          Culoare: {item.finish === 'black' ? 'Negru Texturat' : 'Alb Satinat'}
+                          Culoare: {finishNameMap[item.finish] || item.finish}
                         </p>
                       </div>
 

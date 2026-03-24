@@ -12,7 +12,7 @@ export interface CartItem {
   officeFunction: string;
   officeOrientation: 'lateral' | 'centered';
   houseOrientation: 'lateral' | 'centered';
-  finish: 'black' | 'white';
+  finish: 'black' | 'white' | 'brown' | 'lightgray';
   price: number;
   quantity: number;
 }

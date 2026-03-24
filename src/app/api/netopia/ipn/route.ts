@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { Ipn } from 'netopia-payment2';
+import { sendPaymentConfirmation } from '@/lib/resend/send';
 
 
 // Use server-side Supabase client (not exposed to browser)
@@ -134,6 +135,32 @@ export async function POST(request: NextRequest) {
       console.error('[IPN] Supabase update error');
     } else {
       console.log(`[IPN] Order ${orderId} updated to: ${internalStatus}`);
+    }
+
+    // Trimite email de confirmare plată dacă plata a fost confirmată
+    if (internalStatus === 'paid') {
+      try {
+        const { data: orderData } = await supabaseAdmin
+          .from('orders')
+          .select('*')
+          .eq('id', orderId)
+          .single();
+
+        const { data: orderItems } = await supabaseAdmin
+          .from('order_items')
+          .select('*')
+          .eq('order_id', orderId);
+
+        if (orderData) {
+          await sendPaymentConfirmation({
+            ...orderData,
+            items: orderItems || [],
+          });
+        }
+      } catch (emailErr) {
+        // Nu blocăm răspunsul IPN dacă emailul eșuează
+        console.error('[IPN] Eroare la trimiterea emailului de confirmare plată:', emailErr);
+      }
     }
 
     // TODO: Facturare automată va fi implementată prin WOOT

@@ -1,4 +1,4 @@
--- Script inițializare bază de date numeredecasa.ro
+-- Script inițializare bază de date numarul.ro
 -- Rulează acest script în SQL Editor-ul din dashboard-ul Supabase
 
 -- 1. Creează tabela de comenzi
@@ -35,12 +35,14 @@ CREATE TABLE order_items (
   
   -- Date produs direct din configurator
   product_type TEXT NOT NULL CHECK (product_type IN ('house', 'apartment', 'office')),
-  finish TEXT NOT NULL CHECK (finish IN ('black', 'white')),
+  finish TEXT NOT NULL CHECK (finish IN ('black', 'white', 'brown', 'lightgray')),
   
   main_number TEXT,
   street_name TEXT,
   office_name TEXT,
   office_function TEXT,
+  office_orientation TEXT DEFAULT 'lateral' CHECK (office_orientation IN ('lateral', 'centered')),
+  house_orientation TEXT DEFAULT 'lateral' CHECK (house_orientation IN ('lateral', 'centered')),
   
   quantity INTEGER NOT NULL DEFAULT 1 CHECK (quantity > 0),
   unit_price DECIMAL(10, 2) NOT NULL,

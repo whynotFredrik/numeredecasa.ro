@@ -1,8 +1,8 @@
 import { Scale } from 'lucide-react';
 
 export const metadata = {
-  title: 'Termeni și Condiții — numeredecasa.ro',
-  description: 'Termenii și condițiile generale de utilizare a magazinului online numeredecasa.ro.',
+  title: 'Termeni și Condiții — numarul.ro',
+  description: 'Termenii și condițiile generale de utilizare a magazinului online numarul.ro.',
 };
 
 export default function TermeniPage() {
@@ -19,7 +19,7 @@ export default function TermeniPage() {
         <p className="text-foreground/60 text-sm">Ultima actualizare: 12 martie 2026</p>
 
         <h2>1. Date Firmă</h2>
-        <p>Magazinul online <strong>numeredecasa.ro</strong> este operat de <strong>SC GUNDAHAR SRL</strong>, cu sediul social în Str. Feleacului 14, Oradea, România, CUI: 36704546. Email de contact: ciobotaru.serban@gmail.com, Telefon: 0756 210 895.</p>
+        <p>Magazinul online <strong>numarul.ro</strong> este operat de <strong>SC GUNDAHAR SRL</strong>, cu sediul social în Str. Feleacului 14, Oradea, România, CUI: 36704546. Email de contact: ciobotaru.serban@gmail.com, Telefon: 0756 210 895.</p>
 
         <h2>2. Definiții</h2>
         <p><strong>Vânzător</strong> — SC GUNDAHAR SRL. <strong>Cumpărător</strong> — orice persoană fizică sau juridică care accesează site-ul și plasează o comandă. <strong>Produs</strong> — numere stradale, numere de apartament, sau plăcuțe birou personalizate, fabricate la comandă conform configurației alese de cumpărător.</p>

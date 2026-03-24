@@ -106,6 +106,8 @@ export default function CheckoutPage() {
         street_name: item.streetName,
         office_name: item.officeName,
         office_function: item.officeFunction,
+        office_orientation: item.officeOrientation,
+        house_orientation: item.houseOrientation,
         quantity: item.quantity,
         unit_price: item.price,
         total_price: item.price * item.quantity
@@ -122,7 +124,14 @@ export default function CheckoutPage() {
         return;
       }
 
-      // 3. Inițiază plata prin Netopia
+      // 3. Trimite email de confirmare comandă (non-blocking)
+      fetch('/api/email/order-confirmation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId }),
+      }).catch((err) => console.error('Email send error:', err));
+
+      // 4. Inițiază plata prin Netopia
       const paymentResponse = await fetch('/api/netopia/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -130,7 +139,7 @@ export default function CheckoutPage() {
           orderId,
           amount: grandTotal,
           currency: 'RON',
-          description: `Comandă numeredecasa.ro #${orderId.slice(0, 8)}`,
+          description: `Comandă numarul.ro #${orderId.slice(0, 8)}`,
           billing: {
             email,
             phone,
@@ -310,8 +319,8 @@ export default function CheckoutPage() {
                          )}
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-bold text-sm">Model Signature - {item.productType === 'house' ? 'Case' : item.productType === 'apartment' ? 'Apt' : 'Birou'}</h4>
-                      <p className="text-xs text-foreground/50">Culoare: {item.finish === 'black' ? 'Negru' : 'Alb'}</p>
+                      <h4 className="font-bold text-sm">Plăcuță {item.productType === 'house' ? 'Casă' : item.productType === 'apartment' ? 'Apartament' : 'Birou'}</h4>
+                      <p className="text-xs text-foreground/50">Culoare: {{ black: 'Negru', white: 'Alb', brown: 'Maro', lightgray: 'Gri Deschis' }[item.finish] || item.finish}</p>
                       <div className="flex justify-between items-center mt-2">
                         <span className="text-xs font-semibold">Cantitate: {item.quantity}</span>
                         <span className="font-bold text-sm">{item.price * item.quantity} RON</span>

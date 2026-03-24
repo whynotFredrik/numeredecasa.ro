@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
         ntpID: '',
         posSignature: posSignature,
         dateTime: new Date().toISOString(),
-        description: `Comandă numeredecasa.ro #${orderId.slice(0, 8)}`,
+        description: `Comandă numarul.ro #${orderId.slice(0, 8)}`,
         orderID: orderId,
         amount: amount,
         currency: currency || 'RON',

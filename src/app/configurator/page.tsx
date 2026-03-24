@@ -14,10 +14,19 @@ export default function Configurator() {
   const [officeFunction, setOfficeFunction] = useState('MEDIC STOMATOLOG');
   const [officeOrientation, setOfficeOrientation] = useState<'lateral' | 'centered'>('lateral');
   const [houseOrientation, setHouseOrientation] = useState<'lateral' | 'centered'>('lateral');
-  const [finish, setFinish] = useState<'black' | 'white'>('black');
-  
+  const [finish, setFinish] = useState<'black' | 'white' | 'brown' | 'lightgray'>('black');
+
   const basePrice = productType === 'house' ? 129 : productType === 'apartment' ? 89 : 159;
   const totalPrice = basePrice;
+
+  // Color config for each finish
+  const finishColors: Record<string, { bg: string; text: string; shadow: string }> = {
+    black: { bg: 'bg-[#1a1a1a]', text: 'text-[#1a1a1a]', shadow: '2px 8px 16px rgba(0,0,0,0.15)' },
+    white: { bg: 'bg-white', text: 'text-white', shadow: '2px 8px 16px rgba(0,0,0,0.1)' },
+    brown: { bg: 'bg-[#5C3A21]', text: 'text-[#5C3A21]', shadow: '2px 8px 16px rgba(92,58,33,0.2)' },
+    lightgray: { bg: 'bg-[#B0B0B0]', text: 'text-[#B0B0B0]', shadow: '2px 8px 16px rgba(0,0,0,0.1)' },
+  };
+  const fc = finishColors[finish];
   
   const addItem = useCartStore((state) => state.addItem);
 
@@ -65,8 +74,8 @@ export default function Configurator() {
                   {/* OFFICE VERSION — LATERAL */}
                   {productType === 'office' && officeOrientation === 'lateral' && (
                     <div
-                      className={`flex flex-col w-full max-w-[500px] z-10 transition-all duration-500 ease-out ${finish === 'black' ? 'text-[#1a1a1a]' : 'text-white'}`}
-                      style={{ textShadow: finish === 'black' ? '2px 8px 16px rgba(0,0,0,0.15)' : '2px 8px 16px rgba(0,0,0,0.1)' }}
+                      className={`flex flex-col w-full max-w-[500px] z-10 transition-all duration-500 ease-out ${fc.text}`}
+                      style={{ textShadow: fc.shadow }}
                     >
                       <div className="w-full flex justify-end relative z-20">
                         <motion.div
@@ -84,7 +93,7 @@ export default function Configurator() {
                         </motion.div>
                       </div>
 
-                      <div className={`w-full h-3 md:h-5 rounded-sm shadow-lg relative z-10 ${finish === 'black' ? 'bg-[#1a1a1a]' : 'bg-white'}`}></div>
+                      <div className={`w-full h-3 md:h-5 rounded-sm shadow-lg relative z-10 ${fc.bg}`}></div>
 
                       <div className="w-full flex justify-start relative z-20">
                         <motion.div
@@ -108,8 +117,8 @@ export default function Configurator() {
                   {/* OFFICE VERSION — CENTRAT */}
                   {productType === 'office' && officeOrientation === 'centered' && (
                     <div
-                      className={`flex flex-col items-center w-fit mx-auto z-10 transition-all duration-500 ease-out ${finish === 'black' ? 'text-[#1a1a1a]' : 'text-white'}`}
-                      style={{ textShadow: finish === 'black' ? '2px 8px 16px rgba(0,0,0,0.15)' : '2px 8px 16px rgba(0,0,0,0.1)' }}
+                      className={`flex flex-col items-center w-fit mx-auto z-10 transition-all duration-500 ease-out ${fc.text}`}
+                      style={{ textShadow: fc.shadow }}
                     >
                       <motion.div
                         key={`${officeName}-centered`}
@@ -125,7 +134,7 @@ export default function Configurator() {
                         {officeName || 'NUME'}
                       </motion.div>
 
-                      <div className={`h-3 md:h-5 rounded-sm shadow-lg relative z-10 ${finish === 'black' ? 'bg-[#1a1a1a]' : 'bg-white'}`}
+                      <div className={`h-3 md:h-5 rounded-sm shadow-lg relative z-10 ${fc.bg}`}
                         style={{ width: 'calc(100% + 1.5rem)' }}
                       ></div>
 
@@ -149,8 +158,8 @@ export default function Configurator() {
                   {/* HOUSE VERSION — LATERAL */}
                   {productType === 'house' && houseOrientation === 'lateral' && (
                     <div
-                      className={`flex flex-col items-end w-full max-w-[500px] ml-[15%] md:ml-[10%] z-10 transition-all duration-500 ease-out ${finish === 'black' ? 'text-[#1a1a1a]' : 'text-white'}`}
-                      style={{ textShadow: finish === 'black' ? '2px 8px 16px rgba(0,0,0,0.15)' : '2px 8px 16px rgba(0,0,0,0.1)' }}
+                      className={`flex flex-col items-end w-full max-w-[500px] ml-[15%] md:ml-[10%] z-10 transition-all duration-500 ease-out ${fc.text}`}
+                      style={{ textShadow: fc.shadow }}
                     >
                       <motion.div
                         key={mainNumber}
@@ -168,7 +177,7 @@ export default function Configurator() {
                       </motion.div>
 
                       <div className="w-full h-3 md:h-5 relative z-10 flex justify-end" style={{ marginBottom: 0 }}>
-                        <div className={`absolute right-0 top-0 h-full w-[170%] md:w-[250%] max-w-[600px] rounded-sm shadow-lg ${finish === 'black' ? 'bg-[#1a1a1a]' : 'bg-white'}`}></div>
+                        <div className={`absolute right-0 top-0 h-full w-[170%] md:w-[250%] max-w-[600px] rounded-sm shadow-lg ${fc.bg}`}></div>
                       </div>
 
                       <motion.div
@@ -192,8 +201,8 @@ export default function Configurator() {
                   {/* HOUSE VERSION — CENTRAT */}
                   {productType === 'house' && houseOrientation === 'centered' && (
                     <div
-                      className={`flex flex-col items-center w-fit mx-auto z-10 transition-all duration-500 ease-out ${finish === 'black' ? 'text-[#1a1a1a]' : 'text-white'}`}
-                      style={{ textShadow: finish === 'black' ? '2px 8px 16px rgba(0,0,0,0.15)' : '2px 8px 16px rgba(0,0,0,0.1)' }}
+                      className={`flex flex-col items-center w-fit mx-auto z-10 transition-all duration-500 ease-out ${fc.text}`}
+                      style={{ textShadow: fc.shadow }}
                     >
                       <motion.div
                         key={`${mainNumber}-centered`}
@@ -210,7 +219,7 @@ export default function Configurator() {
                         {mainNumber || '10'}
                       </motion.div>
 
-                      <div className={`h-3 md:h-5 rounded-sm shadow-lg relative z-10 ${finish === 'black' ? 'bg-[#1a1a1a]' : 'bg-white'}`}
+                      <div className={`h-3 md:h-5 rounded-sm shadow-lg relative z-10 ${fc.bg}`}
                         style={{ width: 'calc(100% + 1.5rem)' }}
                       ></div>
 
@@ -235,8 +244,8 @@ export default function Configurator() {
                   {/* APARTMENT VERSION */}
                   {productType === 'apartment' && (
                     <div 
-                      className={`flex flex-col items-center w-fit mx-auto z-10 transition-all duration-500 ease-out ${finish === 'black' ? 'text-[#1a1a1a]' : 'text-white'}`}
-                      style={{ textShadow: finish === 'black' ? '2px 8px 16px rgba(0,0,0,0.15)' : '2px 8px 16px rgba(0,0,0,0.1)' }}
+                      className={`flex flex-col items-center w-fit mx-auto z-10 transition-all duration-500 ease-out ${fc.text}`}
+                      style={{ textShadow: fc.shadow }}
                     >
                       <motion.div 
                         key={mainNumber}
@@ -254,7 +263,7 @@ export default function Configurator() {
                       </motion.div>
                       
                       <div className="w-full h-3 md:h-5 relative z-10 flex justify-center" style={{ marginBottom: 0 }}>
-                        <div className={`absolute left-1/2 -translate-x-1/2 w-[115%] h-full rounded-sm shadow-lg ${finish === 'black' ? 'bg-[#1a1a1a]' : 'bg-white'}`}></div>
+                        <div className={`absolute left-1/2 -translate-x-1/2 w-[115%] h-full rounded-sm shadow-lg ${fc.bg}`}></div>
                       </div>
                     </div>
                   )}
@@ -418,22 +427,22 @@ export default function Configurator() {
               <div className="space-y-3 pt-4 border-t border-foreground/5">
                 <label className="text-sm font-semibold">Culoare & Textură</label>
                 <div className="grid grid-cols-2 gap-3">
-                  <button 
-                    onClick={() => setFinish('black')}
-                    className={`flex items-center gap-3 p-3 rounded-xl border text-left transition-all ${finish === 'black' ? 'border-primary bg-primary/5 ring-1 ring-primary/20' : 'border-foreground/10 hover:border-foreground/30'}`}
-                  >
-                    <div className="w-8 h-8 rounded-full bg-[#1a1a1a] shadow-inner"></div>
-                    <span className="text-sm font-medium">Negru Mat<br/><span className="text-xs text-foreground/50 font-normal">Texturat</span></span>
-                    {finish === 'black' && <Check className="w-4 h-4 ml-auto text-primary" />}
-                  </button>
-                  <button 
-                    onClick={() => setFinish('white')}
-                    className={`flex items-center gap-3 p-3 rounded-xl border text-left transition-all ${finish === 'white' ? 'border-primary bg-primary/5 ring-1 ring-primary/20 bg-foreground/[0.02]' : 'border-foreground/10 hover:border-foreground/30'}`}
-                  >
-                    <div className="w-8 h-8 rounded-full bg-white border border-gray-200 shadow-inner"></div>
-                    <span className="text-sm font-medium">Alb Pur<br/><span className="text-xs text-foreground/50 font-normal">Satinat</span></span>
-                    {finish === 'white' && <Check className="w-4 h-4 ml-auto text-primary" />}
-                  </button>
+                  {([
+                    { key: 'black' as const, label: 'Negru Mat', sub: 'Texturat', color: 'bg-[#1a1a1a]', border: '' },
+                    { key: 'white' as const, label: 'Alb Pur', sub: 'Satinat', color: 'bg-white', border: 'border border-gray-200' },
+                    { key: 'brown' as const, label: 'Maro', sub: 'Texturat', color: 'bg-[#5C3A21]', border: '' },
+                    { key: 'lightgray' as const, label: 'Gri Deschis', sub: 'Satinat', color: 'bg-[#B0B0B0]', border: '' },
+                  ]).map((opt) => (
+                    <button
+                      key={opt.key}
+                      onClick={() => setFinish(opt.key)}
+                      className={`flex items-center gap-3 p-3 rounded-xl border text-left transition-all ${finish === opt.key ? 'border-primary bg-primary/5 ring-1 ring-primary/20' : 'border-foreground/10 hover:border-foreground/30'}`}
+                    >
+                      <div className={`w-8 h-8 rounded-full shadow-inner shrink-0 ${opt.color} ${opt.border}`}></div>
+                      <span className="text-sm font-medium">{opt.label}<br/><span className="text-xs text-foreground/50 font-normal">{opt.sub}</span></span>
+                      {finish === opt.key && <Check className="w-4 h-4 ml-auto text-primary shrink-0" />}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
