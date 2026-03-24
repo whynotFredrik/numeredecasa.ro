@@ -74,14 +74,14 @@ export default function Configurator() {
                   {/* OFFICE VERSION — LATERAL */}
                   {productType === 'office' && officeOrientation === 'lateral' && (
                     <div
-                      className={`flex flex-col w-full max-w-[500px] z-10 transition-all duration-500 ease-out ${fc.text}`}
+                      className={`flex flex-col w-[70%] max-w-[350px] mx-auto z-10 transition-all duration-500 ease-out ${fc.text}`}
                     >
                       <div className="w-full flex justify-end relative z-20">
                         <motion.div
                           key={officeName}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
-                          className="font-bold tracking-wider uppercase whitespace-nowrap pr-4 md:pr-8"
+                          className="font-bold tracking-wider uppercase whitespace-nowrap"
                           style={{
                             fontFamily: "var(--font-open-sans), sans-serif",
                             marginBottom: '-0.40em',
@@ -99,7 +99,7 @@ export default function Configurator() {
                           key={officeFunction}
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
-                          className="font-bold tracking-wider uppercase whitespace-nowrap pl-4 md:pl-8"
+                          className="font-bold tracking-wider uppercase whitespace-nowrap"
                           style={{
                             fontFamily: "var(--font-open-sans), sans-serif",
                             marginTop: '-0.20em',
@@ -133,7 +133,7 @@ export default function Configurator() {
                       </motion.div>
 
                       <div className={`h-3 md:h-5 rounded-sm shadow-lg relative z-10 ${fc.bg}`}
-                        style={{ width: 'calc(100% + 1.5rem)' }}
+                        style={{ width: 'calc(100% + 0.5rem)' }}
                       ></div>
 
                       <motion.div
@@ -156,13 +156,13 @@ export default function Configurator() {
                   {/* HOUSE VERSION — LATERAL */}
                   {productType === 'house' && houseOrientation === 'lateral' && (
                     <div
-                      className={`flex flex-col items-end w-full max-w-[500px] ml-[15%] md:ml-[10%] z-10 transition-all duration-500 ease-out ${fc.text}`}
+                      className={`flex flex-col items-end w-full max-w-[500px] mx-auto z-10 transition-all duration-500 ease-out ${fc.text}`}
                     >
                       <motion.div
                         key={mainNumber}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="leading-none tracking-tighter relative z-20 mr-4 md:mr-12"
+                        className="leading-none tracking-tighter relative z-20 mr-4 md:pr-15"
                         style={{
                           fontFamily: "var(--font-open-sans), sans-serif",
                           fontWeight: 700,
@@ -173,25 +173,27 @@ export default function Configurator() {
                         {mainNumber || '10'}
                       </motion.div>
 
-                      <div className="w-full h-3 md:h-5 relative z-10 flex justify-end" style={{ marginBottom: 0 }}>
-                        <div className={`absolute right-0 top-0 h-full w-[170%] md:w-[250%] max-w-[600px] rounded-sm shadow-lg ${fc.bg}`}></div>
+                      <div className="w-full h-3 md:h-5 relative z-10 flex justify-center" style={{ marginBottom: 0 }}>
+                        <div className={`absolute left-1/2 -translate-x-1/2 h-full w-full md:w-[150%] max-w-[400px] rounded-sm shadow-lg ${fc.bg}`}></div>
                       </div>
 
-                      <motion.div
-                        key={streetName}
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="tracking-wider uppercase whitespace-nowrap relative z-20"
-                        style={{
-                          fontFamily: "var(--font-open-sans), sans-serif",
-                          fontWeight: 700,
-                          marginTop: '-0.20em',
-                          lineHeight: 1,
-                          fontSize: `calc(clamp(1.2rem, 3.5vw, 2.5rem) * ${Math.min(1, 15 / Math.max(1, streetName.replace(/\s/g, '').length))})`
-                        }}
-                      >
-                        {streetName || 'STRADA'}
-                      </motion.div>
+                      <div className="w-full flex justify-end relative z-20 pr-4 md:pr-17">
+                        <motion.div
+                          key={streetName}
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="tracking-wider uppercase whitespace-nowrap"
+                          style={{
+                            fontFamily: "var(--font-open-sans), sans-serif",
+                            fontWeight: 700,
+                            marginTop: '-0.20em',
+                            lineHeight: 1,
+                            fontSize: `calc(clamp(1.2rem, 3.5vw, 2.5rem) * ${Math.min(1, 15 / Math.max(1, streetName.replace(/\s/g, '').length))})`
+                          }}
+                        >
+                          {streetName || 'STRADA'}
+                        </motion.div>
+                      </div>
                     </div>
                   )}
 
@@ -216,7 +218,7 @@ export default function Configurator() {
                       </motion.div>
 
                       <div className={`h-3 md:h-5 rounded-sm shadow-lg relative z-10 ${fc.bg}`}
-                        style={{ width: 'calc(100% + 1.5rem)' }}
+                        style={{ width: 'calc(100% + 0.5rem)' }}
                       ></div>
 
                       <motion.div
@@ -258,7 +260,7 @@ export default function Configurator() {
                       </motion.div>
                       
                       <div className="w-full h-3 md:h-5 relative z-10 flex justify-center" style={{ marginBottom: 0 }}>
-                        <div className={`absolute left-1/2 -translate-x-1/2 w-[115%] h-full rounded-sm shadow-lg ${fc.bg}`}></div>
+                        <div className={`absolute left-1/2 -translate-x-1/2 w-[105%] h-full rounded-sm shadow-lg ${fc.bg}`}></div>
                       </div>
                     </div>
                   )}
