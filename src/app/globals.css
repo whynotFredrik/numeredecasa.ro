@@ -16,6 +16,7 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* Dark mode dezactivat temporar — site-ul folosește doar light mode
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #141211;
@@ -24,6 +25,7 @@
     --card: #1E1C19;
   }
 }
+*/
 
 body {
   background: var(--background);
