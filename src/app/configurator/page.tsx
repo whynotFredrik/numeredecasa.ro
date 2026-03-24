@@ -12,6 +12,8 @@ export default function Configurator() {
   const [streetName, setStreetName] = useState('STR EXEMPLU');
   const [officeName, setOfficeName] = useState('DR POPESCU');
   const [officeFunction, setOfficeFunction] = useState('MEDIC STOMATOLOG');
+  const [officeOrientation, setOfficeOrientation] = useState<'lateral' | 'centered'>('lateral');
+  const [houseOrientation, setHouseOrientation] = useState<'lateral' | 'centered'>('lateral');
   const [finish, setFinish] = useState<'black' | 'white'>('black');
   
   const basePrice = productType === 'house' ? 129 : productType === 'apartment' ? 89 : 159;
@@ -26,6 +28,8 @@ export default function Configurator() {
       streetName,
       officeName,
       officeFunction,
+      officeOrientation,
+      houseOrientation,
       finish,
       price: totalPrice,
       quantity: 1,
@@ -58,41 +62,41 @@ export default function Configurator() {
               >
                   {/* Container for the sign components */}
                   
-                  {/* OFFICE VERSION */}
-                  {productType === 'office' && (
-                    <div 
+                  {/* OFFICE VERSION — LATERAL */}
+                  {productType === 'office' && officeOrientation === 'lateral' && (
+                    <div
                       className={`flex flex-col w-full max-w-[500px] z-10 transition-all duration-500 ease-out ${finish === 'black' ? 'text-[#1a1a1a]' : 'text-white'}`}
                       style={{ textShadow: finish === 'black' ? '2px 8px 16px rgba(0,0,0,0.15)' : '2px 8px 16px rgba(0,0,0,0.1)' }}
                     >
                       <div className="w-full flex justify-end relative z-20">
-                        <motion.div 
+                        <motion.div
                           key={officeName}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           className="font-bold tracking-wider uppercase whitespace-nowrap pr-4 md:pr-8"
-                          style={{ 
+                          style={{
                             fontFamily: "var(--font-open-sans), sans-serif",
-                            marginBottom: '-0.40em', 
-                            fontSize: `calc(clamp(1.5rem, 4vw, 3rem) * ${Math.min(1, 15 / Math.max(1, officeName.length))})` 
+                            marginBottom: '-0.40em',
+                            fontSize: `calc(clamp(1.5rem, 4vw, 3rem) * ${Math.min(1, 15 / Math.max(1, officeName.length))})`
                           }}
                         >
                           {officeName || 'NUME'}
                         </motion.div>
                       </div>
-                      
+
                       <div className={`w-full h-3 md:h-5 rounded-sm shadow-lg relative z-10 ${finish === 'black' ? 'bg-[#1a1a1a]' : 'bg-white'}`}></div>
-                      
+
                       <div className="w-full flex justify-start relative z-20">
-                        <motion.div 
+                        <motion.div
                           key={officeFunction}
                           initial={{ opacity: 0, y: -10 }}
                           animate={{ opacity: 1, y: 0 }}
                           className="font-bold tracking-wider uppercase whitespace-nowrap pl-4 md:pl-8"
-                          style={{ 
+                          style={{
                             fontFamily: "var(--font-open-sans), sans-serif",
                             marginTop: '-0.20em',
                             lineHeight: 1,
-                            fontSize: `calc(clamp(0.8rem, 2vw, 1.5rem) * ${Math.min(1, 20 / Math.max(1, officeFunction.length))})` 
+                            fontSize: `calc(clamp(0.8rem, 2vw, 1.5rem) * ${Math.min(1, 20 / Math.max(1, officeFunction.length))})`
                           }}
                         >
                           {officeFunction}
@@ -101,42 +105,126 @@ export default function Configurator() {
                     </div>
                   )}
 
-                  {/* HOUSE VERSION */}
-                  {productType === 'house' && (
-                    <div 
+                  {/* OFFICE VERSION — CENTRAT */}
+                  {productType === 'office' && officeOrientation === 'centered' && (
+                    <div
+                      className={`flex flex-col items-center w-fit mx-auto z-10 transition-all duration-500 ease-out ${finish === 'black' ? 'text-[#1a1a1a]' : 'text-white'}`}
+                      style={{ textShadow: finish === 'black' ? '2px 8px 16px rgba(0,0,0,0.15)' : '2px 8px 16px rgba(0,0,0,0.1)' }}
+                    >
+                      <motion.div
+                        key={`${officeName}-centered`}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="font-bold tracking-wider uppercase whitespace-nowrap text-center relative z-20"
+                        style={{
+                          fontFamily: "var(--font-open-sans), sans-serif",
+                          marginBottom: '-0.40em',
+                          fontSize: `calc(clamp(1.5rem, 4vw, 3rem) * ${Math.min(1, 15 / Math.max(1, officeName.length))})`
+                        }}
+                      >
+                        {officeName || 'NUME'}
+                      </motion.div>
+
+                      <div className={`h-3 md:h-5 rounded-sm shadow-lg relative z-10 ${finish === 'black' ? 'bg-[#1a1a1a]' : 'bg-white'}`}
+                        style={{ width: 'calc(100% + 1.5rem)' }}
+                      ></div>
+
+                      <motion.div
+                        key={`${officeFunction}-centered`}
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="font-bold tracking-wider uppercase whitespace-nowrap text-center relative z-20"
+                        style={{
+                          fontFamily: "var(--font-open-sans), sans-serif",
+                          marginTop: '-0.20em',
+                          lineHeight: 1,
+                          fontSize: `calc(clamp(0.8rem, 2vw, 1.5rem) * ${Math.min(1, 20 / Math.max(1, officeFunction.length))})`
+                        }}
+                      >
+                        {officeFunction}
+                      </motion.div>
+                    </div>
+                  )}
+
+                  {/* HOUSE VERSION — LATERAL */}
+                  {productType === 'house' && houseOrientation === 'lateral' && (
+                    <div
                       className={`flex flex-col items-end w-full max-w-[500px] ml-[15%] md:ml-[10%] z-10 transition-all duration-500 ease-out ${finish === 'black' ? 'text-[#1a1a1a]' : 'text-white'}`}
                       style={{ textShadow: finish === 'black' ? '2px 8px 16px rgba(0,0,0,0.15)' : '2px 8px 16px rgba(0,0,0,0.1)' }}
                     >
-                      <motion.div 
+                      <motion.div
                         key={mainNumber}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="leading-none tracking-tighter relative z-20 mr-4 md:mr-12"
-                        style={{ 
+                        style={{
                           fontFamily: "var(--font-open-sans), sans-serif",
-                          fontWeight: 700, 
+                          fontWeight: 700,
                           fontSize: 'clamp(6rem, 14vw, 11rem)',
                           marginBottom: '-0.15em'
                         }}
                       >
                         {mainNumber || '10'}
                       </motion.div>
-                      
+
                       <div className="w-full h-3 md:h-5 relative z-10 flex justify-end" style={{ marginBottom: 0 }}>
                         <div className={`absolute right-0 top-0 h-full w-[170%] md:w-[250%] max-w-[600px] rounded-sm shadow-lg ${finish === 'black' ? 'bg-[#1a1a1a]' : 'bg-white'}`}></div>
                       </div>
 
-                      <motion.div 
+                      <motion.div
                         key={streetName}
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         className="tracking-wider uppercase whitespace-nowrap relative z-20"
-                        style={{ 
+                        style={{
                           fontFamily: "var(--font-open-sans), sans-serif",
                           fontWeight: 700,
                           marginTop: '-0.20em',
                           lineHeight: 1,
-                          fontSize: `calc(clamp(1.2rem, 3.5vw, 2.5rem) * ${Math.min(1, 15 / Math.max(1, streetName.replace(/\s/g, '').length))})` 
+                          fontSize: `calc(clamp(1.2rem, 3.5vw, 2.5rem) * ${Math.min(1, 15 / Math.max(1, streetName.replace(/\s/g, '').length))})`
+                        }}
+                      >
+                        {streetName || 'STRADA'}
+                      </motion.div>
+                    </div>
+                  )}
+
+                  {/* HOUSE VERSION — CENTRAT */}
+                  {productType === 'house' && houseOrientation === 'centered' && (
+                    <div
+                      className={`flex flex-col items-center w-fit mx-auto z-10 transition-all duration-500 ease-out ${finish === 'black' ? 'text-[#1a1a1a]' : 'text-white'}`}
+                      style={{ textShadow: finish === 'black' ? '2px 8px 16px rgba(0,0,0,0.15)' : '2px 8px 16px rgba(0,0,0,0.1)' }}
+                    >
+                      <motion.div
+                        key={`${mainNumber}-centered`}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="leading-none tracking-tighter relative z-20 text-center"
+                        style={{
+                          fontFamily: "var(--font-open-sans), sans-serif",
+                          fontWeight: 700,
+                          fontSize: 'clamp(6rem, 14vw, 11rem)',
+                          marginBottom: '-0.15em'
+                        }}
+                      >
+                        {mainNumber || '10'}
+                      </motion.div>
+
+                      <div className={`h-3 md:h-5 rounded-sm shadow-lg relative z-10 ${finish === 'black' ? 'bg-[#1a1a1a]' : 'bg-white'}`}
+                        style={{ width: 'calc(100% + 1.5rem)' }}
+                      ></div>
+
+                      <motion.div
+                        key={`${streetName}-centered`}
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="tracking-wider uppercase whitespace-nowrap relative z-20 text-center"
+                        style={{
+                          fontFamily: "var(--font-open-sans), sans-serif",
+                          fontWeight: 700,
+                          marginTop: '-0.20em',
+                          lineHeight: 1,
+                          fontSize: `calc(clamp(1.2rem, 3.5vw, 2.5rem) * ${Math.min(1, 15 / Math.max(1, streetName.replace(/\s/g, '').length))})`
                         }}
                       >
                         {streetName || 'STRADA'}
@@ -234,6 +322,39 @@ export default function Configurator() {
               </div>
               )}
 
+              {/* Orientation Selection (House only) */}
+              {productType === 'house' && (
+                <div className="space-y-3 animate-in fade-in">
+                  <label className="text-sm font-semibold">Orientare</label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      onClick={() => setHouseOrientation('lateral')}
+                      className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${houseOrientation === 'lateral' ? 'border-primary bg-primary/5 ring-1 ring-primary/20' : 'border-foreground/10 hover:border-foreground/30'}`}
+                    >
+                      <div className="w-full h-12 flex flex-col items-end justify-center px-2 bg-foreground/[0.03] rounded-lg">
+                        <div className="text-[8px] font-bold text-foreground/60 leading-tight mr-1">25</div>
+                        <div className="w-full h-[2px] bg-foreground/20 my-[1px]"></div>
+                        <div className="text-[5px] text-foreground/40 leading-tight">STR EXEMPLU</div>
+                      </div>
+                      <span className="text-sm font-medium">Lateral</span>
+                      {houseOrientation === 'lateral' && <Check className="w-4 h-4 text-primary" />}
+                    </button>
+                    <button
+                      onClick={() => setHouseOrientation('centered')}
+                      className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${houseOrientation === 'centered' ? 'border-primary bg-primary/5 ring-1 ring-primary/20' : 'border-foreground/10 hover:border-foreground/30'}`}
+                    >
+                      <div className="w-full h-12 flex flex-col items-center justify-center px-2 bg-foreground/[0.03] rounded-lg">
+                        <div className="text-[8px] font-bold text-foreground/60 leading-tight">25</div>
+                        <div className="w-8 h-[2px] bg-foreground/20 my-[1px]"></div>
+                        <div className="text-[5px] text-foreground/40 leading-tight text-center">STR EXEMPLU</div>
+                      </div>
+                      <span className="text-sm font-medium">Centrat</span>
+                      {houseOrientation === 'centered' && <Check className="w-4 h-4 text-primary" />}
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {/* Office Inputs */}
               {productType === 'office' && (
                 <div className="space-y-4 animate-in fade-in">
@@ -256,6 +377,39 @@ export default function Configurator() {
                       placeholder="Ex: MEDIC STOMATOLOG"
                       className="w-full bg-foreground/[0.03] border border-foreground/10 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary transition-all uppercase"
                     />
+                  </div>
+                </div>
+              )}
+
+              {/* Orientation Selection (Office only) */}
+              {productType === 'office' && (
+                <div className="space-y-3 animate-in fade-in">
+                  <label className="text-sm font-semibold">Orientare</label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      onClick={() => setOfficeOrientation('lateral')}
+                      className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${officeOrientation === 'lateral' ? 'border-primary bg-primary/5 ring-1 ring-primary/20' : 'border-foreground/10 hover:border-foreground/30'}`}
+                    >
+                      <div className="w-full h-12 flex flex-col items-start justify-center px-2 bg-foreground/[0.03] rounded-lg">
+                        <div className="w-full h-[2px] bg-foreground/20 mb-1"></div>
+                        <div className="text-[6px] font-bold text-foreground/60 leading-tight">NUME</div>
+                        <div className="text-[5px] text-foreground/40 leading-tight">FUNCȚIE</div>
+                      </div>
+                      <span className="text-sm font-medium">Lateral</span>
+                      {officeOrientation === 'lateral' && <Check className="w-4 h-4 text-primary" />}
+                    </button>
+                    <button
+                      onClick={() => setOfficeOrientation('centered')}
+                      className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${officeOrientation === 'centered' ? 'border-primary bg-primary/5 ring-1 ring-primary/20' : 'border-foreground/10 hover:border-foreground/30'}`}
+                    >
+                      <div className="w-full h-12 flex flex-col items-center justify-center px-2 bg-foreground/[0.03] rounded-lg">
+                        <div className="text-[6px] font-bold text-foreground/60 leading-tight text-center">NUME</div>
+                        <div className="text-[5px] text-foreground/40 leading-tight text-center">FUNCȚIE</div>
+                        <div className="w-8 h-[2px] bg-foreground/20 mt-1"></div>
+                      </div>
+                      <span className="text-sm font-medium">Centrat</span>
+                      {officeOrientation === 'centered' && <Check className="w-4 h-4 text-primary" />}
+                    </button>
                   </div>
                 </div>
               )}

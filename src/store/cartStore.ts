@@ -10,6 +10,8 @@ export interface CartItem {
   streetName: string;
   officeName: string;
   officeFunction: string;
+  officeOrientation: 'lateral' | 'centered';
+  houseOrientation: 'lateral' | 'centered';
   finish: 'black' | 'white';
   price: number;
   quantity: number;
