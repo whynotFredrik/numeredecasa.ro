@@ -12,14 +12,7 @@ export function Footer() {
                             alt="numarul.ro"
                             width={160}
                             height={36}
-                            className="h-8 w-auto dark:hidden"
-                        />
-                        <Image
-                            src="/logo-dark.svg"
-                            alt="numarul.ro"
-                            width={160}
-                            height={36}
-                            className="h-8 w-auto hidden dark:block"
+                            className="h-8 w-auto"
                         />
                     </div>
                     <p className="text-sm text-foreground/60 max-w-sm leading-relaxed mb-4">

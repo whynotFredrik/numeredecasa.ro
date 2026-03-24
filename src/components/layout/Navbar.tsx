@@ -24,15 +24,7 @@ export function Navbar() {
                         alt="numarul.ro"
                         width={140}
                         height={32}
-                        className="h-7 w-auto dark:hidden"
-                        priority
-                    />
-                    <Image
-                        src="/logo-dark.svg"
-                        alt="numarul.ro"
-                        width={140}
-                        height={32}
-                        className="h-7 w-auto hidden dark:block"
+                        className="h-7 w-auto"
                         priority
                     />
                 </Link>
