@@ -74,7 +74,7 @@ function formatItemDetails(item: OrderItem): string {
 }
 
 export function orderConfirmationEmail(order: OrderData): { subject: string; html: string } {
-  const subject = `Confirmare comandă #${order.id.slice(0, 8).toUpperCase()} — Numere de Casă`;
+  const subject = `Confirmare comandă #${order.id.slice(0, 8).toUpperCase()} — numarul.ro`;
 
   const itemsHtml = order.items.map(item => `
     <tr>
@@ -98,23 +98,23 @@ export function orderConfirmationEmail(order: OrderData): { subject: string; htm
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body style="margin: 0; padding: 0; background-color: #f5f5f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f5f5; padding: 32px 16px;">
+<body style="margin: 0; padding: 0; background-color: #F0EDE8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #F0EDE8; padding: 32px 16px;">
     <tr>
       <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #FDFCFA; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
 
           <!-- Header -->
           <tr>
-            <td style="background-color: #1a1a1a; padding: 32px; text-align: center;">
-              <h1 style="color: #ffffff; margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 1px;">NUMERE DE CASĂ</h1>
+            <td style="background-color: #1A1A1A; padding: 32px; text-align: center;">
+              <h1 style="color: #F0EDE8; margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 1px;">NUMARUL.RO</h1>
             </td>
           </tr>
 
           <!-- Greeting -->
           <tr>
             <td style="padding: 32px 32px 16px;">
-              <h2 style="margin: 0 0 8px; font-size: 20px; color: #1a1a1a;">Mulțumim pentru comandă!</h2>
+              <h2 style="margin: 0 0 8px; font-size: 20px; color: #1A1A1A;">Mulțumim pentru comandă!</h2>
               <p style="margin: 0; color: #555; font-size: 15px; line-height: 1.6;">
                 Bună ${order.customer_first_name},<br/>
                 Comanda ta <strong>#${order.id.slice(0, 8).toUpperCase()}</strong> a fost înregistrată cu succes. Vom începe producția imediat ce plata este confirmată.
@@ -126,7 +126,7 @@ export function orderConfirmationEmail(order: OrderData): { subject: string; htm
           <tr>
             <td style="padding: 16px 32px;">
               <table width="100%" cellpadding="0" cellspacing="0" style="border: 1px solid #eee; border-radius: 8px; overflow: hidden;">
-                <tr style="background-color: #fafafa;">
+                <tr style="background-color: #F0EDE8;">
                   <th style="padding: 12px 16px; text-align: left; font-size: 13px; color: #888; font-weight: 600;">Produs</th>
                   <th style="padding: 12px 16px; text-align: center; font-size: 13px; color: #888; font-weight: 600;">Cant.</th>
                   <th style="padding: 12px 16px; text-align: right; font-size: 13px; color: #888; font-weight: 600;">Preț</th>
@@ -149,8 +149,8 @@ export function orderConfirmationEmail(order: OrderData): { subject: string; htm
                   <td style="padding: 8px 0; text-align: right; font-size: 14px;">${order.shipping_amount > 0 ? order.shipping_amount.toFixed(2) + ' RON' : 'GRATUIT'}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 12px 0; border-top: 2px solid #1a1a1a; font-size: 16px; font-weight: 700;">Total</td>
-                  <td style="padding: 12px 0; border-top: 2px solid #1a1a1a; text-align: right; font-size: 16px; font-weight: 700;">${order.total_amount.toFixed(2)} RON</td>
+                  <td style="padding: 12px 0; border-top: 2px solid #A0926B; font-size: 16px; font-weight: 700;">Total</td>
+                  <td style="padding: 12px 0; border-top: 2px solid #A0926B; text-align: right; font-size: 16px; font-weight: 700;">${order.total_amount.toFixed(2)} RON</td>
                 </tr>
               </table>
             </td>
@@ -159,7 +159,7 @@ export function orderConfirmationEmail(order: OrderData): { subject: string; htm
           <!-- Shipping -->
           <tr>
             <td style="padding: 0 32px 24px;">
-              <div style="background-color: #fafafa; border-radius: 8px; padding: 16px;">
+              <div style="background-color: #F0EDE8; border-radius: 8px; padding: 16px;">
                 <p style="margin: 0 0 4px; font-size: 13px; color: #888; font-weight: 600;">LIVRARE</p>
                 <p style="margin: 0; font-size: 14px; color: #333;">${shippingInfo}</p>
               </div>
@@ -169,8 +169,8 @@ export function orderConfirmationEmail(order: OrderData): { subject: string; htm
           <!-- Timeline -->
           <tr>
             <td style="padding: 0 32px 32px;">
-              <div style="background-color: #f0f7ff; border-radius: 8px; padding: 16px; border-left: 4px solid #3b82f6;">
-                <p style="margin: 0; font-size: 14px; color: #1e40af;">
+              <div style="background-color: #F0EDE8; border-radius: 8px; padding: 16px; border-left: 4px solid #A0926B;">
+                <p style="margin: 0; font-size: 14px; color: #1A1A1A;">
                   Termen de livrare estimat: <strong>4-6 zile lucrătoare</strong>
                 </p>
               </div>
@@ -179,7 +179,7 @@ export function orderConfirmationEmail(order: OrderData): { subject: string; htm
 
           <!-- Footer -->
           <tr>
-            <td style="background-color: #fafafa; padding: 24px 32px; text-align: center; border-top: 1px solid #eee;">
+            <td style="background-color: #F0EDE8; padding: 24px 32px; text-align: center; border-top: 1px solid #e0dbd4;">
               <p style="margin: 0 0 8px; font-size: 13px; color: #888;">
                 Ai întrebări? Răspunde direct la acest email sau contactează-ne pe site.
               </p>
@@ -209,16 +209,16 @@ export function paymentConfirmedEmail(order: OrderData): { subject: string; html
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
-<body style="margin: 0; padding: 0; background-color: #f5f5f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f5f5f5; padding: 32px 16px;">
+<body style="margin: 0; padding: 0; background-color: #F0EDE8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #F0EDE8; padding: 32px 16px;">
     <tr>
       <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #FDFCFA; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
 
           <!-- Header -->
           <tr>
-            <td style="background-color: #1a1a1a; padding: 32px; text-align: center;">
-              <h1 style="color: #ffffff; margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 1px;">NUMERE DE CASĂ</h1>
+            <td style="background-color: #1A1A1A; padding: 32px; text-align: center;">
+              <h1 style="color: #F0EDE8; margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 1px;">NUMARUL.RO</h1>
             </td>
           </tr>
 
@@ -226,9 +226,9 @@ export function paymentConfirmedEmail(order: OrderData): { subject: string; html
           <tr>
             <td style="padding: 32px;">
               <div style="text-align: center; margin-bottom: 24px;">
-                <div style="display: inline-block; background-color: #dcfce7; border-radius: 50%; width: 64px; height: 64px; line-height: 64px; font-size: 32px;">&#10003;</div>
+                <div style="display: inline-block; background-color: #F0EDE8; border-radius: 50%; width: 64px; height: 64px; line-height: 64px; font-size: 32px; color: #A0926B;">&#10003;</div>
               </div>
-              <h2 style="margin: 0 0 16px; font-size: 20px; color: #1a1a1a; text-align: center;">Plata a fost confirmată!</h2>
+              <h2 style="margin: 0 0 16px; font-size: 20px; color: #1A1A1A; text-align: center;">Plata a fost confirmată!</h2>
               <p style="margin: 0; color: #555; font-size: 15px; line-height: 1.6; text-align: center;">
                 Bună ${order.customer_first_name},<br/>
                 Plata pentru comanda <strong>#${order.id.slice(0, 8).toUpperCase()}</strong> în valoare de <strong>${order.total_amount.toFixed(2)} RON</strong> a fost procesată cu succes.
@@ -239,8 +239,8 @@ export function paymentConfirmedEmail(order: OrderData): { subject: string; html
           <!-- Next Steps -->
           <tr>
             <td style="padding: 0 32px 32px;">
-              <div style="background-color: #fafafa; border-radius: 8px; padding: 20px;">
-                <p style="margin: 0 0 4px; font-size: 13px; color: #888; font-weight: 600;">CE URMEAZĂ</p>
+              <div style="background-color: #F0EDE8; border-radius: 8px; padding: 20px;">
+                <p style="margin: 0 0 4px; font-size: 13px; color: #A0926B; font-weight: 600;">CE URMEAZĂ</p>
                 <p style="margin: 0; font-size: 14px; color: #333; line-height: 1.6;">
                   Comanda ta a intrat în producție. Plăcuțele sunt fabricate manual cu atenție la detalii. Vei primi un email cu AWB-ul de la curier în momentul expedierii.
                 </p>
@@ -250,7 +250,7 @@ export function paymentConfirmedEmail(order: OrderData): { subject: string; html
 
           <!-- Footer -->
           <tr>
-            <td style="background-color: #fafafa; padding: 24px 32px; text-align: center; border-top: 1px solid #eee;">
+            <td style="background-color: #F0EDE8; padding: 24px 32px; text-align: center; border-top: 1px solid #e0dbd4;">
               <p style="margin: 0 0 8px; font-size: 13px; color: #888;">
                 Ai întrebări? Răspunde direct la acest email.
               </p>
