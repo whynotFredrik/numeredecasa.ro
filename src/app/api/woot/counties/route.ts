@@ -1,6 +1,28 @@
 import { NextResponse } from 'next/server';
 import { getCounties } from '@/lib/woot/client';
 
+// All 41 Romanian counties + Bucharest — normalized (no diacritics, lowercase)
+const ROMANIAN_COUNTIES = new Set([
+  'alba', 'arad', 'arges', 'bacau', 'bihor', 'bistrita-nasaud', 'botosani',
+  'braila', 'brasov', 'bucuresti', 'buzau', 'calarasi', 'caras-severin',
+  'cluj', 'constanta', 'covasna', 'dambovita', 'dolj', 'galati', 'giurgiu',
+  'gorj', 'harghita', 'hunedoara', 'ialomita', 'iasi', 'ilfov', 'maramures',
+  'mehedinti', 'mures', 'neamt', 'olt', 'prahova', 'salaj', 'satu mare',
+  'sibiu', 'suceava', 'teleorman', 'timis', 'tulcea', 'valcea', 'vaslui',
+  'vrancea',
+  // Common alternate spellings
+  'bistrita nasaud', 'caras severin', 'satu-mare',
+]);
+
+function stripDiacritics(str: string): string {
+  return str
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9 -]/g, '')
+    .trim();
+}
+
 export async function GET() {
   try {
     const data = await getCounties();
@@ -20,37 +42,26 @@ export async function GET() {
       }
     }
 
-    console.log('[API /woot/counties] Total counties from API:', list.length);
+    console.log('[API /woot/counties] Total from API:', list.length);
     if (list.length > 0) {
-      console.log('[API /woot/counties] Sample item:', JSON.stringify(list[0]).slice(0, 300));
+      console.log('[API /woot/counties] Sample:', JSON.stringify(list[0]).slice(0, 300));
     }
 
-    // Filter to Romanian counties only
-    // Locations have country_id — counties likely do too
-    // Romania country_id is typically 1 in WOOT
-    if (list.length > 45) {
-      // Try filtering by country_id field
-      const roCounties = list.filter((item: any) => {
-        const cid = item.country_id;
-        // Keep if country_id is 1 (Romania) or if country_code is 'RO'
-        if (cid === 1 || cid === '1') return true;
-        if (item.country_code === 'RO' || item.country_code === 'ro') return true;
-        return false;
+    // Always filter to Romanian counties — match by name
+    if (list.length > 42) {
+      const filtered = list.filter((item: any) => {
+        const name = stripDiacritics(String(item.name ?? item.county_name ?? ''));
+        return ROMANIAN_COUNTIES.has(name);
       });
 
-      if (roCounties.length >= 30 && roCounties.length < list.length) {
-        console.log('[API /woot/counties] Filtered to', roCounties.length, 'Romanian counties (by country_id/country_code)');
-        list = roCounties;
-      } else {
-        console.log('[API /woot/counties] country_id filter got', roCounties.length, '— checking country field');
-        // Maybe the field is named differently, log available fields
-        if (list[0]) {
-          console.log('[API /woot/counties] Available fields:', Object.keys(list[0]));
-        }
+      console.log('[API /woot/counties] Filtered:', filtered.length, 'Romanian counties');
+
+      if (filtered.length >= 30) {
+        list = filtered;
       }
     }
 
-    // Sort alphabetically
+    // Sort alphabetically in Romanian
     list.sort((a: any, b: any) => {
       const nameA = String(a.name ?? a.county_name ?? '');
       const nameB = String(b.name ?? b.county_name ?? '');

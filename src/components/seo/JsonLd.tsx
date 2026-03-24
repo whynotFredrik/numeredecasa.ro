@@ -60,7 +60,7 @@ export function LocalBusinessJsonLd() {
       opens: "09:00",
       closes: "18:00",
     },
-    priceRange: "99 RON - 149 RON",
+    priceRange: "89 RON - 159 RON",
     currenciesAccepted: "RON",
     paymentAccepted: "Credit Card, Debit Card",
     areaServed: {

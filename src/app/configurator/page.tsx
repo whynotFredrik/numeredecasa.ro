@@ -14,7 +14,7 @@ export default function Configurator() {
   const [officeFunction, setOfficeFunction] = useState('MEDIC STOMATOLOG');
   const [finish, setFinish] = useState<'black' | 'white'>('black');
   
-  const basePrice = productType === 'apartment' ? 99 : 149;
+  const basePrice = productType === 'house' ? 129 : productType === 'apartment' ? 89 : 159;
   const totalPrice = basePrice;
   
   const addItem = useCartStore((state) => state.addItem);
@@ -40,7 +40,7 @@ export default function Configurator() {
           <ChevronRight className="w-4 h-4" />
           <Link href="/produse" className="hover:text-primary transition-colors">Produse</Link>
           <ChevronRight className="w-4 h-4" />
-          <span className="text-foreground/90 font-medium">Configurator Model Signature</span>
+          <span className="text-foreground/90 font-medium">Configurator</span>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">

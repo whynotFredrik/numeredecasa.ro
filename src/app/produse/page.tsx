@@ -16,7 +16,7 @@ const products = [
     title: 'Numere Stradale',
     subtitle: 'Case & Vile',
     description: 'Numărul tău stradal, conceput ca element arhitectural. Un număr mare, vizibil, deasupra numelui străzii tale — toate suspendate pe o bară metalică elegantă.',
-    price: 149,
+    price: 129,
     icon: Home,
     features: ['Număr + Nume Stradă', 'Design suspendat premium', 'Rezistență UV & intemperii'],
     configTab: 'house',
@@ -26,7 +26,7 @@ const products = [
     title: 'Numere Apartament',
     subtitle: 'Blocuri & Rezidențiale',
     description: 'Numărul apartamentului tău, într-un format compact dar de impact. Design curat, minimalist, perfect pentru holurile moderne sau clasice.',
-    price: 99,
+    price: 89,
     icon: Building,
     features: ['Număr mare centralizat', 'Profil subțire elegant', 'Montaj simplu, invizibil'],
     configTab: 'apartment',
@@ -36,9 +36,9 @@ const products = [
     title: 'Plăcuțe Birou',
     subtitle: 'Birouri & Cabinete',
     description: 'Plăcuță nominală pentru biroul tău. Numele deasupra barei de susținere, funcția dedesubt — o carte de vizită permanentă pe ușa ta.',
-    price: 149,
+    price: 159,
     icon: Briefcase,
-    features: ['Nume + Funcție/Profesie', 'Look corporate premium', 'Font Open Sans profesional'],
+    features: ['Nume + Funcție/Profesie', 'Look corporate premium', 'Montaj simplu, invizibil'],
     configTab: 'office',
   },
 ];
@@ -82,19 +82,19 @@ export default function ProdusePage() {
       <ProductJsonLd
         name="Număr Stradal Premium"
         description="Numărul tău stradal, conceput ca element arhitectural. Număr mare vizibil deasupra numelui străzii, suspendat pe bară metalică elegantă."
-        price={149}
+        price={129}
         sku="numar-stradal-premium"
       />
       <ProductJsonLd
         name="Număr Apartament"
         description="Numărul apartamentului tău, într-un format compact dar de impact. Design curat, minimalist, perfect pentru holuri moderne sau clasice."
-        price={99}
+        price={89}
         sku="numar-apartament"
       />
       <ProductJsonLd
         name="Plăcuță Birou"
         description="Plăcuță nominală pentru biroul tău. Numele deasupra barei de susținere, funcția dedesubt — o carte de vizită permanentă."
-        price={149}
+        price={159}
         sku="placuta-birou"
       />
       <div className="max-w-7xl mx-auto">
@@ -102,7 +102,7 @@ export default function ProdusePage() {
         <div className="text-center mb-16 space-y-4">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium border border-primary/20">
             <Sparkles className="w-4 h-4" />
-            Colecția Signature
+            Fabricate la comandă
           </div>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
             Toate <span className="text-primary italic font-serif">Produsele</span> Noastre

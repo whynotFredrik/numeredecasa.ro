@@ -1,10 +1,12 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, Box, Layers, MousePointer2 } from 'lucide-react';
+import { ArrowRight, Box, Layers, MousePointer2, Home, Building, Briefcase, Sparkles } from 'lucide-react';
 
-export default function Home() {
+export default function HomePage() {
   return (
     <main className="min-h-[90vh] flex flex-col pt-32 pb-12 px-6 lg:px-12 items-center">
+
+      {/* ── Hero ── */}
       <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary mb-2 border border-primary/20 text-sm font-medium w-fit">
@@ -37,7 +39,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="relative animate-in fade-in slide-in-from-right-8 duration-1000 delay-300 w-full aspect-square lg:aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-2xl shadow-foreground/5 bg-foreground/5">
+        <div className="relative animate-in fade-in slide-in-from-right-8 duration-1000 delay-300 w-full aspect-square lg:aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-2xl shadow-foreground/5 bg-foreground/5 hidden lg:block">
           <Image
             src="/hero-ro.png"
             alt="Număr Stradal Premium"
@@ -50,34 +52,118 @@ export default function Home() {
         </div>
       </div>
 
+      {/* ── Configurator CTA Section ── */}
       <div className="mt-32 max-w-7xl w-full">
-        <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-12">
-          <div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Colecția <span className="text-primary italic font-serif">Signature</span></h2>
-            <p className="text-foreground/60 max-w-xl">Produsul nostru vedetă: personalizat în detaliu, fabricat cu precizie, menit să reziste zeci de ani pe fațada casei tale.</p>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 bg-background rounded-[2rem] border border-foreground/5 shadow-xl shadow-foreground/5 overflow-hidden">
+          {/* Preview side */}
+          <div className="bg-foreground/[0.03] flex items-center justify-center p-12 lg:p-16 min-h-[350px]">
+            <div className="flex flex-col items-end pr-4">
+              <span className="text-7xl font-bold leading-none tracking-tight" style={{ fontFamily: 'var(--font-geist-sans)' }}>25</span>
+              <div className="w-36 h-1 bg-foreground rounded-full mt-2 mb-2"></div>
+              <span className="text-sm font-bold tracking-widest uppercase" style={{ fontFamily: 'var(--font-open-sans)' }}>Str. Feleacului</span>
+            </div>
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-32">
-          <div className="relative aspect-video md:aspect-[4/3] rounded-3xl overflow-hidden bg-foreground/5">
-            <Image src="/product-ro.png" alt="Numar Stradal Signature" fill className="object-cover" />
-          </div>
-          <div className="flex flex-col justify-center p-6 lg:p-12 bg-foreground/[0.02] border border-foreground/5 rounded-3xl">
-            <h3 className="text-2xl font-bold mb-2">Model Clasic Suspendat</h3>
-            <p className="text-xl text-primary font-medium mb-6">de la 149 RON</p>
-            <p className="text-foreground/70 mb-8 leading-relaxed">
-              O reinterpretare a plăcuțelor stradale tradiționale, realizată dintr-un aliaj ușor dar extrem de rigid. Litera și numărul tău principal stau mândre deasupra numelui străzii, pentru o citeală excelentă din strada. Textură mată elegantă, instalare usoara invizibilă.
+          {/* Info side */}
+          <div className="p-8 lg:p-12 flex flex-col justify-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-medium border border-primary/20 w-fit mb-6">
+              <Sparkles className="w-3.5 h-3.5" />
+              Configurator Live
+            </div>
+
+            <h2 className="text-3xl font-bold mb-4">Creează-ți <span className="text-primary italic font-serif">propriul</span> model</h2>
+            <p className="text-foreground/70 leading-relaxed mb-6">
+              Alege tipul produsului, personalizează numărul, strada, culorile — și vezi rezultatul în timp real. Totul fabricat la comandă, exact cum vrei tu.
             </p>
+
             <ul className="space-y-3 mb-8">
-              <li className="flex items-center gap-3"><Box className="w-5 h-5 text-primary" /> <span className="text-foreground/80">Design premium 3D din material texturat</span></li>
-              <li className="flex items-center gap-3"><Layers className="w-5 h-5 text-primary" /> <span className="text-foreground/80">Rezistență industrială la raze UV</span></li>
+              <li className="flex items-center gap-3 text-foreground/80">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
+                Previzualizare live a produsului
+              </li>
+              <li className="flex items-center gap-3 text-foreground/80">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
+                Personalizare completă: text, culoare, tip
+              </li>
+              <li className="flex items-center gap-3 text-foreground/80">
+                <div className="w-1.5 h-1.5 rounded-full bg-primary"></div>
+                Adaugă direct în coș și comandă online
+              </li>
             </ul>
-            <Link href="/configurator" className="bg-primary text-primary-foreground text-white px-6 py-4 rounded-xl font-medium hover:bg-primary/90 transition-colors w-fit shadow-lg shadow-primary/20">
-              Configurează acest produs
+
+            <Link
+              href="/configurator"
+              className="inline-flex items-center gap-2 bg-foreground text-background px-8 py-4 rounded-xl font-bold hover:-translate-y-0.5 hover:shadow-xl transition-all duration-300 w-fit"
+            >
+              Deschide Configuratorul
+              <ArrowRight className="w-5 h-5" />
             </Link>
           </div>
         </div>
+      </div>
 
+      {/* ── Products Section ── */}
+      <div className="mt-32 max-w-7xl w-full">
+        <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-12">
+          <div>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Produsele <span className="text-primary italic font-serif">noastre</span></h2>
+            <p className="text-foreground/60 max-w-xl">Fiecare produs este configurat de tine, fabricat cu precizie și livrat la ușa ta în toată România.</p>
+          </div>
+          <Link
+            href="/produse"
+            className="flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all shrink-0"
+          >
+            Vezi toate produsele
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            {
+              icon: Home,
+              title: 'Numere Stradale',
+              subtitle: 'Case & Vile',
+              price: 129,
+              desc: 'Numărul tău stradal, conceput ca element arhitectural. Vizibil, elegant, rezistent.',
+            },
+            {
+              icon: Building,
+              title: 'Numere Apartament',
+              subtitle: 'Blocuri & Rezidențiale',
+              price: 89,
+              desc: 'Design compact dar de impact, perfect pentru holuri moderne sau clasice.',
+            },
+            {
+              icon: Briefcase,
+              title: 'Plăcuțe Birou',
+              subtitle: 'Birouri & Cabinete',
+              price: 159,
+              desc: 'Plăcuță nominală profesională — o carte de vizită permanentă pe ușa ta.',
+            },
+          ].map((product, i) => (
+            <Link
+              key={i}
+              href="/configurator"
+              className="group p-8 rounded-3xl bg-background border border-foreground/5 shadow-lg shadow-foreground/5 hover:border-primary/20 hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+            >
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
+                <product.icon className="w-6 h-6 text-primary" />
+              </div>
+              <span className="text-xs font-medium text-foreground/40 uppercase tracking-wider">{product.subtitle}</span>
+              <h3 className="text-xl font-bold mt-1 mb-2 group-hover:text-primary transition-colors">{product.title}</h3>
+              <p className="text-sm text-foreground/60 leading-relaxed mb-4">{product.desc}</p>
+              <div className="flex items-center justify-between">
+                <span className="text-primary font-bold">de la {product.price} RON</span>
+                <ArrowRight className="w-4 h-4 text-foreground/30 group-hover:text-primary group-hover:translate-x-1 transition-all" />
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Features ── */}
+      <div className="mt-32 max-w-7xl w-full">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
             { icon: Box, title: "Livrare Rapidă", desc: "Primești comanda prin curier la domiciliu sau direct la locker-ul preferat, în toată România." },
