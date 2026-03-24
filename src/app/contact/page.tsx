@@ -80,7 +80,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <p className="font-medium text-sm text-foreground/50">Email</p>
-                    <a href="mailto:ciobotaru.serban@gmail.com" className="text-foreground/80 hover:text-primary transition-colors">ciobotaru.serban@gmail.com</a>
+                    <a href="mailto:contact@numarul.ro" className="text-foreground/80 hover:text-primary transition-colors">contact@numarul.ro</a>
                   </div>
                 </div>
 

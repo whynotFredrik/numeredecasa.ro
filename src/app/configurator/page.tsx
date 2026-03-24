@@ -20,11 +20,11 @@ export default function Configurator() {
   const totalPrice = basePrice;
 
   // Color config for each finish
-  const finishColors: Record<string, { bg: string; text: string; shadow: string }> = {
-    black: { bg: 'bg-[#1a1a1a]', text: 'text-[#1a1a1a]', shadow: '2px 8px 16px rgba(0,0,0,0.15)' },
-    white: { bg: 'bg-white', text: 'text-white', shadow: '2px 8px 16px rgba(0,0,0,0.1)' },
-    brown: { bg: 'bg-[#5C3A21]', text: 'text-[#5C3A21]', shadow: '2px 8px 16px rgba(92,58,33,0.2)' },
-    lightgray: { bg: 'bg-[#B0B0B0]', text: 'text-[#B0B0B0]', shadow: '2px 8px 16px rgba(0,0,0,0.1)' },
+  const finishColors: Record<string, { bg: string; text: string }> = {
+    black: { bg: 'bg-[#1a1a1a]', text: 'text-[#1a1a1a]' },
+    white: { bg: 'bg-white', text: 'text-white' },
+    brown: { bg: 'bg-[#5C3A21]', text: 'text-[#5C3A21]' },
+    lightgray: { bg: 'bg-[#B0B0B0]', text: 'text-[#B0B0B0]' },
   };
   const fc = finishColors[finish];
   
@@ -75,7 +75,6 @@ export default function Configurator() {
                   {productType === 'office' && officeOrientation === 'lateral' && (
                     <div
                       className={`flex flex-col w-full max-w-[500px] z-10 transition-all duration-500 ease-out ${fc.text}`}
-                      style={{ textShadow: fc.shadow }}
                     >
                       <div className="w-full flex justify-end relative z-20">
                         <motion.div
@@ -118,7 +117,6 @@ export default function Configurator() {
                   {productType === 'office' && officeOrientation === 'centered' && (
                     <div
                       className={`flex flex-col items-center w-fit mx-auto z-10 transition-all duration-500 ease-out ${fc.text}`}
-                      style={{ textShadow: fc.shadow }}
                     >
                       <motion.div
                         key={`${officeName}-centered`}
@@ -159,7 +157,6 @@ export default function Configurator() {
                   {productType === 'house' && houseOrientation === 'lateral' && (
                     <div
                       className={`flex flex-col items-end w-full max-w-[500px] ml-[15%] md:ml-[10%] z-10 transition-all duration-500 ease-out ${fc.text}`}
-                      style={{ textShadow: fc.shadow }}
                     >
                       <motion.div
                         key={mainNumber}
@@ -202,7 +199,6 @@ export default function Configurator() {
                   {productType === 'house' && houseOrientation === 'centered' && (
                     <div
                       className={`flex flex-col items-center w-fit mx-auto z-10 transition-all duration-500 ease-out ${fc.text}`}
-                      style={{ textShadow: fc.shadow }}
                     >
                       <motion.div
                         key={`${mainNumber}-centered`}
@@ -245,9 +241,8 @@ export default function Configurator() {
                   {productType === 'apartment' && (
                     <div 
                       className={`flex flex-col items-center w-fit mx-auto z-10 transition-all duration-500 ease-out ${fc.text}`}
-                      style={{ textShadow: fc.shadow }}
                     >
-                      <motion.div 
+                      <motion.div
                         key={mainNumber}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}

@@ -104,7 +104,7 @@ export function Footer() {
             <div className="container mx-auto px-6 mt-8 pt-8 border-t border-foreground/5 flex flex-col md:flex-row items-center justify-between text-xs text-foreground/40 gap-4">
                 <p>© {new Date().getFullYear()} numarul.ro · SC GUNDAHAR SRL. Toate drepturile rezervate.</p>
                 <div className="flex gap-4">
-                    <span>Email: ciobotaru.serban@gmail.com</span>
+                    <span>Email: contact@numarul.ro</span>
                     <span>Tel: 0756 210 895</span>
                 </div>
             </div>

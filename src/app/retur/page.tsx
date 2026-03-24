@@ -53,7 +53,7 @@ export default function ReturPage() {
         <h2>6. Procedura de Retur</h2>
         <p>Pentru a iniția un retur sau o reclamație:</p>
         <ol>
-          <li>Trimite un email la <a href="mailto:ciobotaru.serban@gmail.com">ciobotaru.serban@gmail.com</a> cu numărul comenzii și fotografii</li>
+          <li>Trimite un email la <a href="mailto:contact@numarul.ro">contact@numarul.ro</a> cu numărul comenzii și fotografii</li>
           <li>Vom analiza cererea în maximum 2 zile lucrătoare</li>
           <li>Dacă cererea este aprobată, vom aranja preluarea produsului prin curier sau trimiterea unui produs nou</li>
           <li>Rambursarea (dacă este cazul) se procesează în maximum 14 zile de la primirea produsului returnat</li>
@@ -62,7 +62,7 @@ export default function ReturPage() {
         <h2>7. Contact</h2>
         <p>Pentru orice întrebări legate de retururi:</p>
         <ul>
-          <li>Email: <a href="mailto:ciobotaru.serban@gmail.com">ciobotaru.serban@gmail.com</a></li>
+          <li>Email: <a href="mailto:contact@numarul.ro">contact@numarul.ro</a></li>
           <li>Telefon / WhatsApp: <a href="tel:0756210895">0756 210 895</a></li>
         </ul>
       </article>

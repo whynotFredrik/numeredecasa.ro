@@ -63,7 +63,7 @@ export default function ConfidentialitatePage() {
           <li><strong>Dreptul la portabilitate</strong> — poți solicita datele într-un format structurat</li>
           <li><strong>Dreptul de opoziție</strong> — poți refuza prelucrarea în anumite condiții</li>
         </ul>
-        <p>Pentru exercitarea acestor drepturi, scrie-ne la: <a href="mailto:ciobotaru.serban@gmail.com">ciobotaru.serban@gmail.com</a>.</p>
+        <p>Pentru exercitarea acestor drepturi, scrie-ne la: <a href="mailto:contact@numarul.ro">contact@numarul.ro</a>.</p>
 
         <h2>8. Securitate</h2>
         <p>Utilizăm măsuri tehnice și organizatorice adecvate pentru protecția datelor: conexiuni criptate (HTTPS), baze de date Supabase cu Row Level Security, și acces restricționat la datele comenzilor.</p>

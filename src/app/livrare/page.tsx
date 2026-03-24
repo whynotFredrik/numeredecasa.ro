@@ -41,7 +41,7 @@ export default function LivrarePage() {
         <p>Termenul total estimat (fabricație + livrare) este de <strong>5-9 zile lucrătoare</strong>.</p>
 
         <h2>3. Verificare la Primire</h2>
-        <p>La primirea coletului, te rugăm să verifici integritatea ambalajului și conformitatea produsului cu comanda plasată. Orice neconformitate trebuie semnalată în termen de 48 de ore de la recepție, la adresa de email: <a href="mailto:ciobotaru.serban@gmail.com">ciobotaru.serban@gmail.com</a>.</p>
+        <p>La primirea coletului, te rugăm să verifici integritatea ambalajului și conformitatea produsului cu comanda plasată. Orice neconformitate trebuie semnalată în termen de 48 de ore de la recepție, la adresa de email: <a href="mailto:contact@numarul.ro">contact@numarul.ro</a>.</p>
 
         <h2>4. Livrare Eșuată</h2>
         <p>În cazul în care curierul nu te poate contacta sau nu poți prelua coletul, se va încerca o a doua livrare. Dacă nici aceasta nu reușește, coletul este returnat către noi, iar tu vei fi contactat pentru reprogramarea livrării (costuri suplimentare de transport pot fi aplicate).</p>
@@ -49,7 +49,7 @@ export default function LivrarePage() {
         <h2>5. Contact</h2>
         <p>Pentru orice întrebări legate de livrare, ne poți contacta la:</p>
         <ul>
-          <li>Email: <a href="mailto:ciobotaru.serban@gmail.com">ciobotaru.serban@gmail.com</a></li>
+          <li>Email: <a href="mailto:contact@numarul.ro">contact@numarul.ro</a></li>
           <li>Telefon / WhatsApp: <a href="tel:0756210895">0756 210 895</a></li>
         </ul>
       </article>

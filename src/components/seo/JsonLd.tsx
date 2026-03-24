@@ -23,7 +23,7 @@ export function OrganizationJsonLd() {
       availableLanguage: "Romanian",
       areaServed: "RO",
     },
-    email: "ciobotaru.serban@gmail.com",
+    email: "contact@numarul.ro",
     sameAs: [],
   };
 
@@ -53,7 +53,7 @@ export function LocalBusinessJsonLd() {
       addressCountry: "RO",
     },
     telephone: "+40756210895",
-    email: "ciobotaru.serban@gmail.com",
+    email: "contact@numarul.ro",
     openingHoursSpecification: {
       "@type": "OpeningHoursSpecification",
       dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
