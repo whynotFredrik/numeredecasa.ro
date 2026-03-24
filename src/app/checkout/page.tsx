@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { useCartStore } from '@/store/cartStore';
-import { ChevronRight, CreditCard, Truck, ShieldCheck, MapPin, Package, Check, Loader2 } from 'lucide-react';
+import { ChevronRight, CreditCard, Truck, ShieldCheck, MapPin, Package, Check, Loader2, X } from 'lucide-react';
 import Link from 'next/link';
 import { LockerMapPicker, type LockerData } from '@/components/checkout/LockerMapPicker';
 import { supabase } from '@/lib/supabase/client';
 
 export default function CheckoutPage() {
-  const { items, getCartTotal, getCartCount, clearCart } = useCartStore();
+  const { items, getCartTotal, getCartCount, clearCart, removeItem } = useCartStore();
   const [mounted, setMounted] = useState(false);
   const [shippingMethod, setShippingMethod] = useState<'courier' | 'easybox'>('courier');
   const [selectedLocker, setSelectedLocker] = useState<LockerData | null>(null);
@@ -295,7 +295,14 @@ export default function CheckoutPage() {
               
               <div className="space-y-4 max-h-[300px] overflow-y-auto pr-2">
                 {items.map((item) => (
-                  <div key={item.id} className="flex gap-4">
+                  <div key={item.id} className="flex gap-4 relative group">
+                    <button
+                      onClick={() => removeItem(item.id)}
+                      className="absolute top-1 -right-2 w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary/90 z-10"
+                      title="Șterge produsul"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
                     <div className="w-16 h-16 bg-foreground/5 rounded-xl flex items-center justify-center border border-foreground/10 p-2 shrink-0">
                         {item.productType === 'house' && (
                           <div className="flex flex-col items-center">
