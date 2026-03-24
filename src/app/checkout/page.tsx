@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useCartStore } from '@/store/cartStore';
-import { motion } from 'framer-motion';
 import { ChevronRight, CreditCard, Truck, ShieldCheck, MapPin, Package, Check, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { LockerMapPicker, type LockerData } from '@/components/checkout/LockerMapPicker';

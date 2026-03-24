@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { MapPin, CheckCircle2, Search, Loader2, Package, X, Navigation, AlertTriangle } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { MapPin, CheckCircle2, Search, Loader2, Package, Navigation, AlertTriangle } from 'lucide-react';
 
 export interface LockerData {
   id: string;
