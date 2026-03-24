@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useCartStore } from '@/store/cartStore';
-import { ChevronRight, CreditCard, Truck, ShieldCheck, MapPin, Package, Check, Loader2, X } from 'lucide-react';
+import { ChevronRight, CreditCard, Truck, ShieldCheck, MapPin, Package, Check, Loader2, X, Banknote } from 'lucide-react';
 import Link from 'next/link';
 import { LockerMapPicker, type LockerData } from '@/components/checkout/LockerMapPicker';
 import { supabase } from '@/lib/supabase/client';
@@ -11,6 +11,7 @@ export default function CheckoutPage() {
   const { items, getCartTotal, getCartCount, clearCart, removeItem } = useCartStore();
   const [mounted, setMounted] = useState(false);
   const [shippingMethod, setShippingMethod] = useState<'courier' | 'easybox'>('courier');
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'ramburs'>('card');
   const [selectedLocker, setSelectedLocker] = useState<LockerData | null>(null);
 
   // Form states
@@ -85,6 +86,7 @@ export default function CheckoutPage() {
           shipping_city: shippingMethod === 'courier' ? city : selectedLocker?.city || '',
           shipping_address: shippingMethod === 'courier' ? address : selectedLocker?.address || '',
           easybox_id: shippingMethod === 'easybox' ? selectedLocker?.id || null : null,
+          payment_method: paymentMethod,
           subtotal_amount: total,
           shipping_amount: shippingCost,
           total_amount: grandTotal,
@@ -131,7 +133,14 @@ export default function CheckoutPage() {
         body: JSON.stringify({ orderId }),
       }).catch((err) => console.error('Email send error:', err));
 
-      // 4. Inițiază plata prin Netopia
+      // 4. Plată ramburs — nu trebuie Netopia
+      if (paymentMethod === 'ramburs') {
+        clearCart();
+        setIsSuccess(true);
+        return;
+      }
+
+      // 5. Inițiază plata prin Netopia (card online)
       const paymentResponse = await fetch('/api/netopia/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -162,12 +171,12 @@ export default function CheckoutPage() {
 
       // Extract the paymentURL from the response
       const netopiaPayment = paymentData.payment;
-      const paymentURL = 
-        netopiaPayment?.payment?.paymentURL || 
+      const paymentURL =
+        netopiaPayment?.payment?.paymentURL ||
         netopiaPayment?.paymentURL ||
         netopiaPayment?.data?.paymentURL ||
         netopiaPayment?.url;
-      
+
       if (paymentURL) {
         clearCart();
         window.location.href = paymentURL;
@@ -258,7 +267,7 @@ export default function CheckoutPage() {
                   </button>
                   <button 
                     type="button"
-                    onClick={() => setShippingMethod('easybox')}
+                    onClick={() => { setShippingMethod('easybox'); setPaymentMethod('card'); }}
                     className={`p-4 rounded-xl border text-left flex items-start gap-4 transition-all ${shippingMethod === 'easybox' ? 'border-primary bg-primary/5 ring-1 ring-primary/20' : 'border-foreground/10 hover:border-foreground/30'}`}
                   >
                     <MapPin className={`w-6 h-6 ${shippingMethod === 'easybox' ? 'text-primary' : 'text-foreground/50'}`} />
@@ -285,6 +294,40 @@ export default function CheckoutPage() {
                   )}
                 </div>
               </div>
+
+              {/* Payment Method — only for courier */}
+              {shippingMethod === 'courier' && (
+              <div className="bg-background p-6 md:p-8 rounded-[2rem] border border-foreground/5 shadow-xl shadow-foreground/5 space-y-6">
+                <h2 className="text-xl font-bold flex items-center gap-2">
+                  <span className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm">3</span>
+                  Metodă de Plată
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('card')}
+                    className={`p-4 rounded-xl border text-left flex items-start gap-4 transition-all ${paymentMethod === 'card' ? 'border-primary bg-primary/5 ring-1 ring-primary/20' : 'border-foreground/10 hover:border-foreground/30'}`}
+                  >
+                    <CreditCard className={`w-6 h-6 ${paymentMethod === 'card' ? 'text-primary' : 'text-foreground/50'}`} />
+                    <div>
+                      <div className="font-bold">Card Online</div>
+                      <div className="text-sm text-foreground/60">Plată securizată prin Netopia</div>
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('ramburs')}
+                    className={`p-4 rounded-xl border text-left flex items-start gap-4 transition-all ${paymentMethod === 'ramburs' ? 'border-primary bg-primary/5 ring-1 ring-primary/20' : 'border-foreground/10 hover:border-foreground/30'}`}
+                  >
+                    <Banknote className={`w-6 h-6 ${paymentMethod === 'ramburs' ? 'text-primary' : 'text-foreground/50'}`} />
+                    <div>
+                      <div className="font-bold">Ramburs</div>
+                      <div className="text-sm text-foreground/60">Plată la livrare, în numerar</div>
+                    </div>
+                  </button>
+                </div>
+              </div>
+              )}
             </form>
           </div>
 
@@ -379,7 +422,7 @@ export default function CheckoutPage() {
               
               <div className="flex items-center justify-center gap-2 text-xs text-foreground/50 text-center">
                 <ShieldCheck className="w-4 h-4 text-green-500" />
-                <span>Tranzacție criptată și securizată prin Netopia Payments</span>
+                <span>{paymentMethod === 'ramburs' ? 'Plata se face la livrare, în numerar, către curier' : 'Tranzacție criptată și securizată prin Netopia Payments'}</span>
               </div>
             </div>
           </div>
