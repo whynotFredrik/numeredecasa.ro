@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { resend, FROM_EMAIL, FROM_NAME } from '@/lib/resend/client';
+import { reviewRewardEmail } from '@/lib/resend/templates';
 
 // Public client for reading approved reviews
 const supabasePublic = createClient(
@@ -12,6 +14,16 @@ const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || '',
   process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 );
+
+// Generare cod unic de reducere
+function generateDiscountCode(): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = 'NR-';
+  for (let i = 0; i < 6; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
+}
 
 // GET — Citește recenziile aprobate
 export async function GET(request: NextRequest) {
@@ -111,9 +123,89 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // ── Generare cod de reducere și trimitere email recompensă ──
+    try {
+      // Verifică dacă s-a mai generat un cod pentru acest email (evită duplicate)
+      const { data: existingCode } = await supabaseAdmin
+        .from('discount_codes')
+        .select('code')
+        .eq('source_customer_email', customer_email)
+        .single();
+
+      if (!existingCode) {
+        // Generare cod unic
+        let discountCode = generateDiscountCode();
+        let attempts = 0;
+        while (attempts < 5) {
+          const { data: codeExists } = await supabaseAdmin
+            .from('discount_codes')
+            .select('id')
+            .eq('code', discountCode)
+            .single();
+
+          if (!codeExists) break;
+          discountCode = generateDiscountCode();
+          attempts++;
+        }
+
+        // Salvare cod în baza de date
+        const { data: newCode, error: codeError } = await supabaseAdmin
+          .from('discount_codes')
+          .insert({
+            code: discountCode,
+            discount_percent: 15,
+            source_order_id: order_id || null,
+            source_customer_name: customer_name,
+            source_customer_email: customer_email,
+            max_uses: 3,
+          })
+          .select()
+          .single();
+
+        if (!codeError && newCode) {
+          // Trimite email cu codul de reducere
+          const firstName = customer_name.split(' ')[0];
+          const { subject, html } = reviewRewardEmail({
+            customerFirstName: firstName,
+            discountCode: newCode.code,
+            discountPercent: 15,
+            expiresAt: newCode.expires_at,
+            maxUses: 3,
+          });
+
+          const { error: emailError } = await resend.emails.send({
+            from: `${FROM_NAME} <${FROM_EMAIL}>`,
+            replyTo: 'ciobotaru.serban@gmail.com',
+            to: customer_email,
+            subject,
+            html,
+          });
+
+          if (emailError) {
+            console.error('[Reviews] Eroare la trimiterea emailului de recompensă:', emailError);
+          } else {
+            // Marchează codul ca trimis
+            await supabaseAdmin
+              .from('discount_codes')
+              .update({ email_sent_at: new Date().toISOString() })
+              .eq('code', newCode.code);
+
+            console.log(`[Reviews] Email recompensă trimis la ${customer_email}, cod: ${newCode.code}`);
+          }
+        } else {
+          console.error('[Reviews] Eroare la generarea codului de reducere:', codeError);
+        }
+      } else {
+        console.log(`[Reviews] Codul de reducere există deja pentru ${customer_email}: ${existingCode.code}`);
+      }
+    } catch (rewardErr) {
+      // Nu bloca flow-ul recenziei dacă recompensa eșuează
+      console.error('[Reviews] Eroare la procesarea recompensei:', rewardErr);
+    }
+
     return NextResponse.json({
       success: true,
-      message: 'Recenzia a fost trimisă și va fi publicată după verificare. Mulțumim!',
+      message: 'Recenzia a fost trimisă și va fi publicată după verificare. Verifică-ți emailul pentru codul de reducere!',
     });
   } catch (err) {
     console.error('[Reviews] Excepție:', err);

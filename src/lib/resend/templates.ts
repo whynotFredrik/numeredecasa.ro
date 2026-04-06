@@ -199,9 +199,103 @@ export function orderConfirmationEmail(order: OrderData): { subject: string; htm
   return { subject, html };
 }
 
-// ── Email Referral cu Cod de Reducere 15% ──
+// ── Email Post-Livrare: Solicită Recenzie (menționează recompensa) ──
 
-interface ReferralEmailData {
+interface PostDeliveryEmailData {
+  customerFirstName: string;
+  orderId: string;
+  reviewUrl: string;
+}
+
+export function postDeliveryEmail(data: PostDeliveryEmailData): { subject: string; html: string } {
+  const subject = `${data.customerFirstName}, cum ți se pare plăcuța? Lasă o recenzie și primești un cadou!`;
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; background-color: #F0EDE8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #F0EDE8; padding: 32px 16px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #FDFCFA; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+
+          <!-- Header -->
+          <tr>
+            <td style="background-color: #1A1A1A; padding: 32px; text-align: center;">
+              <h1 style="color: #F0EDE8; margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 1px;">NUMARUL.RO</h1>
+            </td>
+          </tr>
+
+          <!-- Greeting -->
+          <tr>
+            <td style="padding: 32px 32px 16px;">
+              <h2 style="margin: 0 0 12px; font-size: 22px; color: #1A1A1A;">
+                Bună ${data.customerFirstName}, cum ți se pare plăcuța?
+              </h2>
+              <p style="margin: 0; color: #555; font-size: 15px; line-height: 1.7;">
+                Comanda ta a fost livrată cu succes! Ne-ar face mare plăcere să aflăm părerea ta despre produs. Feedback-ul tău îi ajută pe viitorii clienți să ia o decizie informată.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Review CTA -->
+          <tr>
+            <td style="padding: 0 32px 24px;">
+              <div style="background-color: #F0EDE8; border-radius: 12px; padding: 24px; text-align: center;">
+                <p style="margin: 0 0 4px; font-size: 13px; color: #A0926B; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;">PĂREREA TA CONTEAZĂ</p>
+                <p style="margin: 0 0 16px; color: #555; font-size: 14px; line-height: 1.6;">
+                  Scrie o recenzie scurtă — durează sub un minut.
+                </p>
+                <a href="${data.reviewUrl}" style="display: inline-block; background-color: #1A1A1A; color: #F0EDE8; text-decoration: none; padding: 14px 32px; border-radius: 10px; font-weight: 700; font-size: 15px;">
+                  &#9733; Lasă o recenzie
+                </a>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Reward Teaser -->
+          <tr>
+            <td style="padding: 0 32px 32px;">
+              <div style="border-left: 4px solid #A0926B; background-color: #F0EDE8; border-radius: 0 12px 12px 0; padding: 20px 24px;">
+                <p style="margin: 0 0 4px; font-size: 15px; font-weight: 700; color: #1A1A1A;">
+                  &#127873; Bonus: Cod de reducere 15%
+                </p>
+                <p style="margin: 0; font-size: 14px; color: #555; line-height: 1.6;">
+                  După ce lași recenzia, vei primi automat pe email un cod de reducere de <strong>15%</strong> pe care îl poți trimite familiei sau prietenilor tăi. Ei vor beneficia de o reducere la orice plăcuță personalizată!
+                </p>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #F0EDE8; padding: 24px 32px; text-align: center; border-top: 1px solid #e0dbd4;">
+              <p style="margin: 0 0 8px; font-size: 13px; color: #888;">
+                Ai întrebări? Răspunde direct la acest email.
+              </p>
+              <p style="margin: 0; font-size: 12px; color: #bbb;">
+                &copy; ${new Date().getFullYear()} numarul.ro — Plăcuțe personalizate, fabricate în România
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+
+  return { subject, html };
+}
+
+// ── Email Recompensă Recenzie: Cod de Reducere 15% ──
+
+interface ReviewRewardEmailData {
   customerFirstName: string;
   discountCode: string;
   discountPercent: number;
@@ -209,8 +303,8 @@ interface ReferralEmailData {
   maxUses: number;
 }
 
-export function referralDiscountEmail(data: ReferralEmailData): { subject: string; html: string } {
-  const subject = `Un cadou special pentru familia și prietenii tăi — ${data.discountPercent}% reducere!`;
+export function reviewRewardEmail(data: ReviewRewardEmailData): { subject: string; html: string } {
+  const subject = `Mulțumim pentru recenzie, ${data.customerFirstName}! Iată codul tău de ${data.discountPercent}% reducere`;
 
   const expiryDate = new Date(data.expiresAt).toLocaleDateString('ro-RO', {
     year: 'numeric',
@@ -238,55 +332,49 @@ export function referralDiscountEmail(data: ReferralEmailData): { subject: strin
             </td>
           </tr>
 
-          <!-- Gift Icon -->
+          <!-- Thank You -->
           <tr>
-            <td style="padding: 40px 32px 16px; text-align: center;">
-              <div style="display: inline-block; background-color: #F0EDE8; border-radius: 50%; width: 80px; height: 80px; line-height: 80px; font-size: 40px; color: #A0926B;">&#127873;</div>
-            </td>
-          </tr>
-
-          <!-- Main Content -->
-          <tr>
-            <td style="padding: 16px 32px 24px; text-align: center;">
-              <h2 style="margin: 0 0 16px; font-size: 24px; color: #1A1A1A; line-height: 1.3;">
-                ${data.customerFirstName}, ai un cadou special<br/>pentru familia și prietenii tăi!
+            <td style="padding: 32px 32px 16px; text-align: center;">
+              <div style="display: inline-block; background-color: #F0EDE8; border-radius: 50%; width: 72px; height: 72px; line-height: 72px; font-size: 36px; color: #A0926B; margin-bottom: 16px;">&#9733;</div>
+              <h2 style="margin: 0 0 12px; font-size: 22px; color: #1A1A1A;">
+                Mulțumim pentru recenzie, ${data.customerFirstName}!
               </h2>
-              <p style="margin: 0; color: #555; font-size: 15px; line-height: 1.6; max-width: 440px; display: inline-block;">
-                Sperăm că ești mulțumit(ă) de plăcuța ta! Am pregătit un cod de reducere exclusiv pe care îl poți trimite familiei sau prietenilor care vor și ei o plăcuță personalizată.
+              <p style="margin: 0; color: #555; font-size: 15px; line-height: 1.7; max-width: 440px; display: inline-block;">
+                Feedback-ul tău este valoros pentru noi și pentru comunitatea noastră. Ca mulțumire, ai primit un cod de reducere exclusiv pe care îl poți oferi familiei sau prietenilor tăi.
               </p>
             </td>
           </tr>
 
           <!-- Discount Code Box -->
           <tr>
-            <td style="padding: 0 32px 24px;">
-              <div style="background-color: #1A1A1A; border-radius: 16px; padding: 32px; text-align: center;">
-                <p style="margin: 0 0 8px; font-size: 13px; color: #A0926B; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;">COD DE REDUCERE</p>
-                <p style="margin: 0 0 12px; font-size: 36px; font-weight: 800; color: #F0EDE8; letter-spacing: 4px; font-family: monospace;">${data.discountCode}</p>
-                <p style="margin: 0; font-size: 28px; font-weight: 700; color: #A0926B;">${data.discountPercent}% REDUCERE</p>
+            <td style="padding: 8px 32px 24px;">
+              <div style="background-color: #1A1A1A; border-radius: 16px; padding: 28px; text-align: center;">
+                <p style="margin: 0 0 6px; font-size: 12px; color: #A0926B; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;">COD DE REDUCERE PENTRU PRIETENI</p>
+                <p style="margin: 0 0 8px; font-size: 32px; font-weight: 800; color: #F0EDE8; letter-spacing: 4px; font-family: monospace;">${data.discountCode}</p>
+                <p style="margin: 0; font-size: 24px; font-weight: 700; color: #A0926B;">${data.discountPercent}% REDUCERE</p>
               </div>
             </td>
           </tr>
 
-          <!-- Details -->
+          <!-- Code Details -->
           <tr>
             <td style="padding: 0 32px 24px;">
-              <div style="background-color: #F0EDE8; border-radius: 12px; padding: 20px;">
+              <div style="background-color: #F0EDE8; border-radius: 12px; padding: 16px 20px;">
                 <table width="100%" cellpadding="0" cellspacing="0">
                   <tr>
-                    <td style="padding: 8px 0;">
+                    <td style="padding: 6px 0;">
                       <span style="font-size: 13px; color: #888;">Poate fi folosit de</span>
                       <span style="float: right; font-size: 14px; font-weight: 600; color: #1A1A1A;">până la ${data.maxUses} persoane</span>
                     </td>
                   </tr>
                   <tr>
-                    <td style="padding: 8px 0; border-top: 1px solid #e0dbd4;">
+                    <td style="padding: 6px 0; border-top: 1px solid #e0dbd4;">
                       <span style="font-size: 13px; color: #888;">Valabil până la</span>
                       <span style="float: right; font-size: 14px; font-weight: 600; color: #1A1A1A;">${expiryDate}</span>
                     </td>
                   </tr>
                   <tr>
-                    <td style="padding: 8px 0; border-top: 1px solid #e0dbd4;">
+                    <td style="padding: 6px 0; border-top: 1px solid #e0dbd4;">
                       <span style="font-size: 13px; color: #888;">Se aplică pe</span>
                       <span style="float: right; font-size: 14px; font-weight: 600; color: #1A1A1A;">toate produsele</span>
                     </td>
@@ -300,9 +388,9 @@ export function referralDiscountEmail(data: ReferralEmailData): { subject: strin
           <tr>
             <td style="padding: 0 32px 32px; text-align: center;">
               <p style="margin: 0 0 16px; color: #555; font-size: 14px; line-height: 1.6;">
-                Trimite acest cod familiei sau prietenilor tăi — ei trebuie doar să îl introducă la checkout pe site-ul nostru.
+                Trimite acest cod familiei sau prietenilor tăi — ei trebuie doar să îl introducă la checkout pe numarul.ro.
               </p>
-              <a href="https://numarul.ro/configurator" style="display: inline-block; background-color: #A0926B; color: #FDFCFA; text-decoration: none; padding: 14px 32px; border-radius: 10px; font-weight: 700; font-size: 15px;">
+              <a href="https://numarul.ro/configurator" style="display: inline-block; background-color: #A0926B; color: #FDFCFA; text-decoration: none; padding: 12px 28px; border-radius: 10px; font-weight: 700; font-size: 14px;">
                 Vizitează numarul.ro
               </a>
             </td>

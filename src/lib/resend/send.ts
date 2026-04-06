@@ -1,5 +1,5 @@
 import { resend, FROM_EMAIL, FROM_NAME } from './client';
-import { orderConfirmationEmail, paymentConfirmedEmail, referralDiscountEmail } from './templates';
+import { orderConfirmationEmail, paymentConfirmedEmail, postDeliveryEmail, reviewRewardEmail } from './templates';
 
 interface OrderWithItems {
   id: string;
@@ -73,6 +73,44 @@ export async function sendPaymentConfirmation(order: OrderWithItems) {
 
     console.log(`[Email] Confirmare plată trimisă la ${order.customer_email}, ID: ${data?.id}`);
     return { success: true, id: data?.id };
+  } catch (err) {
+    console.error('[Email] Excepție la trimiterea emailului:', err);
+    return { success: false, error: err };
+  }
+}
+
+export async function sendReviewReward(data: {
+  customerEmail: string;
+  customerFirstName: string;
+  discountCode: string;
+  discountPercent: number;
+  expiresAt: string;
+  maxUses: number;
+}) {
+  const { subject, html } = reviewRewardEmail({
+    customerFirstName: data.customerFirstName,
+    discountCode: data.discountCode,
+    discountPercent: data.discountPercent,
+    expiresAt: data.expiresAt,
+    maxUses: data.maxUses,
+  });
+
+  try {
+    const { data: emailData, error } = await resend.emails.send({
+      from: `${FROM_NAME} <${FROM_EMAIL}>`,
+      replyTo: 'ciobotaru.serban@gmail.com',
+      to: data.customerEmail,
+      subject,
+      html,
+    });
+
+    if (error) {
+      console.error('[Email] Eroare la trimiterea recompensei recenzie:', error);
+      return { success: false, error };
+    }
+
+    console.log(`[Email] Recompensă recenzie trimisă la ${data.customerEmail}, ID: ${emailData?.id}`);
+    return { success: true, id: emailData?.id };
   } catch (err) {
     console.error('[Email] Excepție la trimiterea emailului:', err);
     return { success: false, error: err };

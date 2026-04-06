@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { sendOrderConfirmation } from '@/lib/resend/send';
+import { upsertLoopsContact, sendFirstOrderEvent } from '@/lib/loops/events';
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || '',
@@ -46,6 +47,35 @@ export async function POST(request: NextRequest) {
     if (!result.success) {
       return NextResponse.json({ error: 'Emailul nu a putut fi trimis' }, { status: 500 });
     }
+
+    // Adaugă contactul în Loops (non-blocking)
+    upsertLoopsContact({
+      email: order.customer_email,
+      firstName: order.customer_first_name,
+      lastName: order.customer_last_name,
+      phone: order.customer_phone,
+      city: order.shipping_city,
+      county: order.shipping_county,
+    }).catch(err => console.error('[Loops] Eroare upsert contact:', err));
+
+    // Trimite eveniment first_order în Loops (non-blocking)
+    const productTypes = [...new Set((items || []).map((i: any) => {
+      switch (i.product_type) {
+        case 'house': return 'Număr de Casă';
+        case 'apartment': return 'Număr de Apartament';
+        case 'office': return 'Plăcuță de Birou';
+        default: return i.product_type;
+      }
+    }))].join(', ');
+
+    sendFirstOrderEvent({
+      email: order.customer_email,
+      firstName: order.customer_first_name,
+      lastName: order.customer_last_name,
+      orderId: order.id,
+      totalAmount: order.total_amount,
+      productTypes,
+    }).catch(err => console.error('[Loops] Eroare first_order event:', err));
 
     return NextResponse.json({ success: true, emailId: result.id });
   } catch (err) {
