@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(export PATH=\"$HOME/.nvm/versions/node/v25.8.1/bin:$PATH\")",
+      "Bash(npm --version)",
+      "Bash(echo $PATH)",
+      "Read(//bin/**)",
+      "Read(//usr/bin/**)",
+      "Bash(export PATH=\"/bin:/usr/bin:/usr/local/bin:$HOME/.nvm/versions/node/v25.8.1/bin:$PATH\")",
+      "Bash(mkdir -p /Users/serbanciobotaru/Documents/Projects/termes-ro)",
+      "Read(//Users/serbanciobotaru/Documents/Projects/termes-ro/**)",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-git --yes)",
+      "Bash(export PATH=\"/bin:/usr/bin:$HOME/.nvm/versions/node/v25.8.1/bin\")",
+      "Bash(npx --version)",
+      "Bash(/bin/mkdir -p /Users/serbanciobotaru/Documents/Projects/termes-ro)",
+      "Bash(/Users/serbanciobotaru/.nvm/versions/node/v25.8.1/bin/npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-git --yes)",
+      "Bash(/Users/serbanciobotaru/.nvm/versions/node/v25.8.1/bin/node /Users/serbanciobotaru/.nvm/versions/node/v25.8.1/bin/npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-git --yes)",
+      "Bash(env PATH=\"/Users/serbanciobotaru/.nvm/versions/node/v25.8.1/bin:/usr/bin:/bin\" /Users/serbanciobotaru/.nvm/versions/node/v25.8.1/bin/npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-git --yes)"
+    ]
+  }
+}

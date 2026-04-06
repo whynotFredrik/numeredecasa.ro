@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useCartStore } from '@/store/cartStore';
-import { ChevronRight, CreditCard, Truck, ShieldCheck, MapPin, Package, Check, Loader2, X, Banknote } from 'lucide-react';
+import { ChevronRight, CreditCard, Truck, ShieldCheck, MapPin, Package, Check, Loader2, X, Banknote, Tag, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import { LockerMapPicker, type LockerData } from '@/components/checkout/LockerMapPicker';
 import { supabase } from '@/lib/supabase/client';
@@ -23,6 +23,13 @@ export default function CheckoutPage() {
   const [city, setCity] = useState('');
   const [address, setAddress] = useState('');
 
+  // Discount code states
+  const [discountCode, setDiscountCode] = useState('');
+  const [discountPercent, setDiscountPercent] = useState(0);
+  const [discountApplied, setDiscountApplied] = useState(false);
+  const [discountError, setDiscountError] = useState('');
+  const [isValidatingCode, setIsValidatingCode] = useState(false);
+
   // Submission states
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -36,7 +43,50 @@ export default function CheckoutPage() {
 
   const total = getCartTotal();
   const shippingCost = shippingMethod === 'courier' ? 20 : 15; // Placeholder pricing
-  const grandTotal = items.length > 0 ? total + shippingCost : 0;
+  const discountAmount = discountApplied ? Math.round(total * (discountPercent / 100) * 100) / 100 : 0;
+  const grandTotal = items.length > 0 ? total - discountAmount + shippingCost : 0;
+
+  // Validare cod de reducere
+  const handleApplyDiscount = async () => {
+    if (!discountCode.trim()) {
+      setDiscountError('Introdu un cod de reducere');
+      return;
+    }
+    setDiscountError('');
+    setIsValidatingCode(true);
+
+    try {
+      const response = await fetch('/api/discount/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: discountCode.trim() }),
+      });
+
+      const data = await response.json();
+
+      if (data.valid) {
+        setDiscountPercent(data.discount_percent);
+        setDiscountApplied(true);
+        setDiscountCode(data.code);
+        setDiscountError('');
+      } else {
+        setDiscountError(data.error || 'Cod invalid');
+        setDiscountApplied(false);
+        setDiscountPercent(0);
+      }
+    } catch (err) {
+      setDiscountError('Eroare la validarea codului');
+    } finally {
+      setIsValidatingCode(false);
+    }
+  };
+
+  const handleRemoveDiscount = () => {
+    setDiscountApplied(false);
+    setDiscountPercent(0);
+    setDiscountCode('');
+    setDiscountError('');
+  };
 
   if (items.length === 0) {
     return (
@@ -90,6 +140,8 @@ export default function CheckoutPage() {
           subtotal_amount: total,
           shipping_amount: shippingCost,
           total_amount: grandTotal,
+          discount_code: discountApplied ? discountCode : null,
+          discount_amount: discountAmount,
         });
 
       if (orderError) {
@@ -380,11 +432,61 @@ export default function CheckoutPage() {
                 ))}
               </div>
 
+              {/* Cod de Reducere */}
+              <div className="border-t border-foreground/10 pt-6 space-y-3">
+                <label className="text-sm font-semibold flex items-center gap-2">
+                  <Tag className="w-4 h-4 text-primary" />
+                  Cod de Reducere
+                </label>
+                {discountApplied ? (
+                  <div className="flex items-center justify-between p-3 bg-green-500/10 border border-green-500/20 rounded-xl">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5 text-green-500" />
+                      <span className="font-bold text-green-700">{discountCode}</span>
+                      <span className="text-sm text-green-600">(-{discountPercent}%)</span>
+                    </div>
+                    <button
+                      onClick={handleRemoveDiscount}
+                      className="text-foreground/40 hover:text-red-500 transition-colors"
+                      title="Elimină codul"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={discountCode}
+                      onChange={(e) => setDiscountCode(e.target.value.toUpperCase())}
+                      placeholder="Ex: NR-ABC123"
+                      className="flex-1 bg-foreground/[0.02] border border-foreground/10 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all uppercase"
+                    />
+                    <button
+                      onClick={handleApplyDiscount}
+                      disabled={isValidatingCode}
+                      className="px-4 py-2.5 bg-foreground text-background rounded-xl text-sm font-bold hover:bg-foreground/90 transition-colors disabled:opacity-50"
+                    >
+                      {isValidatingCode ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Aplică'}
+                    </button>
+                  </div>
+                )}
+                {discountError && (
+                  <p className="text-xs text-red-500 font-medium">{discountError}</p>
+                )}
+              </div>
+
               <div className="border-t border-foreground/10 pt-6 space-y-4">
                 <div className="flex justify-between text-foreground/60">
                   <span>Subtotal produse ({getCartCount()})</span>
                   <span>{total} RON</span>
                 </div>
+                {discountApplied && (
+                  <div className="flex justify-between text-green-600">
+                    <span>Reducere ({discountPercent}%)</span>
+                    <span>-{discountAmount.toFixed(2)} RON</span>
+                  </div>
+                )}
                 <div className="flex justify-between text-foreground/60">
                   <span>Transport ({shippingMethod === 'courier' ? 'Curier' : 'Easybox'})</span>
                   <span>{shippingCost.toFixed(2)} RON</span>

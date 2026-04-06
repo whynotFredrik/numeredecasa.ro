@@ -1,6 +1,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Box, Layers, MousePointer2, Home, Building, Briefcase, Sparkles } from 'lucide-react';
+import { ReviewsSection } from '@/components/reviews/ReviewsSection';
+
+'use client';
 
 export default function HomePage() {
   return (
@@ -161,6 +164,14 @@ export default function HomePage() {
           ))}
         </div>
       </div>
+
+      {/* ── Reviews Section ── */}
+      <ReviewsSection
+        variant="homepage"
+        title="Ce spun clienții noștri"
+        subtitle="Recenzii reale de la clienți mulțumiți care au ales plăcuțele noastre personalizate."
+        showForm={true}
+      />
 
       {/* ── Features ── */}
       <div className="mt-32 max-w-7xl w-full">

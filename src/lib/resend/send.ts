@@ -1,5 +1,5 @@
 import { resend, FROM_EMAIL, FROM_NAME } from './client';
-import { orderConfirmationEmail, paymentConfirmedEmail } from './templates';
+import { orderConfirmationEmail, paymentConfirmedEmail, referralDiscountEmail } from './templates';
 
 interface OrderWithItems {
   id: string;

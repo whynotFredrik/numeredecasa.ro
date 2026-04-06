@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { ChevronRight, Info, Check, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import { useCartStore } from '@/store/cartStore';
+import { ReviewsSection } from '@/components/reviews/ReviewsSection';
 
 export default function Configurator() {
   const [productType, setProductType] = useState<'house' | 'apartment' | 'office'>('house');
@@ -460,6 +461,17 @@ export default function Configurator() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* ── Recenzii pentru tipul de produs selectat ── */}
+      <div className="max-w-7xl w-full px-6 lg:px-12 pb-16">
+        <ReviewsSection
+          productType={productType}
+          variant="product"
+          title="Recenzii verificate"
+          subtitle="Ce spun clienții care au comandat acest tip de produs."
+          showForm={true}
+        />
       </div>
     </main>
   );

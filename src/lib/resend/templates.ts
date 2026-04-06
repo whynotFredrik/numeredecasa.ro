@@ -199,6 +199,137 @@ export function orderConfirmationEmail(order: OrderData): { subject: string; htm
   return { subject, html };
 }
 
+// ── Email Referral cu Cod de Reducere 15% ──
+
+interface ReferralEmailData {
+  customerFirstName: string;
+  discountCode: string;
+  discountPercent: number;
+  expiresAt: string;
+  maxUses: number;
+}
+
+export function referralDiscountEmail(data: ReferralEmailData): { subject: string; html: string } {
+  const subject = `Un cadou special pentru familia și prietenii tăi — ${data.discountPercent}% reducere!`;
+
+  const expiryDate = new Date(data.expiresAt).toLocaleDateString('ro-RO', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; background-color: #F0EDE8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #F0EDE8; padding: 32px 16px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #FDFCFA; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+
+          <!-- Header -->
+          <tr>
+            <td style="background-color: #1A1A1A; padding: 32px; text-align: center;">
+              <h1 style="color: #F0EDE8; margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 1px;">NUMARUL.RO</h1>
+            </td>
+          </tr>
+
+          <!-- Gift Icon -->
+          <tr>
+            <td style="padding: 40px 32px 16px; text-align: center;">
+              <div style="display: inline-block; background-color: #F0EDE8; border-radius: 50%; width: 80px; height: 80px; line-height: 80px; font-size: 40px; color: #A0926B;">&#127873;</div>
+            </td>
+          </tr>
+
+          <!-- Main Content -->
+          <tr>
+            <td style="padding: 16px 32px 24px; text-align: center;">
+              <h2 style="margin: 0 0 16px; font-size: 24px; color: #1A1A1A; line-height: 1.3;">
+                ${data.customerFirstName}, ai un cadou special<br/>pentru familia și prietenii tăi!
+              </h2>
+              <p style="margin: 0; color: #555; font-size: 15px; line-height: 1.6; max-width: 440px; display: inline-block;">
+                Sperăm că ești mulțumit(ă) de plăcuța ta! Am pregătit un cod de reducere exclusiv pe care îl poți trimite familiei sau prietenilor care vor și ei o plăcuță personalizată.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Discount Code Box -->
+          <tr>
+            <td style="padding: 0 32px 24px;">
+              <div style="background-color: #1A1A1A; border-radius: 16px; padding: 32px; text-align: center;">
+                <p style="margin: 0 0 8px; font-size: 13px; color: #A0926B; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;">COD DE REDUCERE</p>
+                <p style="margin: 0 0 12px; font-size: 36px; font-weight: 800; color: #F0EDE8; letter-spacing: 4px; font-family: monospace;">${data.discountCode}</p>
+                <p style="margin: 0; font-size: 28px; font-weight: 700; color: #A0926B;">${data.discountPercent}% REDUCERE</p>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Details -->
+          <tr>
+            <td style="padding: 0 32px 24px;">
+              <div style="background-color: #F0EDE8; border-radius: 12px; padding: 20px;">
+                <table width="100%" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td style="padding: 8px 0;">
+                      <span style="font-size: 13px; color: #888;">Poate fi folosit de</span>
+                      <span style="float: right; font-size: 14px; font-weight: 600; color: #1A1A1A;">până la ${data.maxUses} persoane</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 0; border-top: 1px solid #e0dbd4;">
+                      <span style="font-size: 13px; color: #888;">Valabil până la</span>
+                      <span style="float: right; font-size: 14px; font-weight: 600; color: #1A1A1A;">${expiryDate}</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 8px 0; border-top: 1px solid #e0dbd4;">
+                      <span style="font-size: 13px; color: #888;">Se aplică pe</span>
+                      <span style="float: right; font-size: 14px; font-weight: 600; color: #1A1A1A;">toate produsele</span>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </td>
+          </tr>
+
+          <!-- CTA -->
+          <tr>
+            <td style="padding: 0 32px 32px; text-align: center;">
+              <p style="margin: 0 0 16px; color: #555; font-size: 14px; line-height: 1.6;">
+                Trimite acest cod familiei sau prietenilor tăi — ei trebuie doar să îl introducă la checkout pe site-ul nostru.
+              </p>
+              <a href="https://numarul.ro/configurator" style="display: inline-block; background-color: #A0926B; color: #FDFCFA; text-decoration: none; padding: 14px 32px; border-radius: 10px; font-weight: 700; font-size: 15px;">
+                Vizitează numarul.ro
+              </a>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #F0EDE8; padding: 24px 32px; text-align: center; border-top: 1px solid #e0dbd4;">
+              <p style="margin: 0 0 8px; font-size: 13px; color: #888;">
+                Ai întrebări? Răspunde direct la acest email.
+              </p>
+              <p style="margin: 0; font-size: 12px; color: #bbb;">
+                &copy; ${new Date().getFullYear()} numarul.ro — Plăcuțe personalizate, fabricate în România
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+
+  return { subject, html };
+}
+
 export function paymentConfirmedEmail(order: OrderData): { subject: string; html: string } {
   const subject = `Plata confirmată — Comandă #${order.id.slice(0, 8).toUpperCase()}`;
 
