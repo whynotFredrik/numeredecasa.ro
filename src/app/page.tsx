@@ -1,9 +1,9 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, Box, Layers, MousePointer2, Home, Building, Briefcase, Sparkles } from 'lucide-react';
 import { ReviewsSection } from '@/components/reviews/ReviewsSection';
-
-'use client';
 
 export default function HomePage() {
   return (
