@@ -145,8 +145,8 @@ export default function CheckoutPage() {
         });
 
       if (orderError) {
-        console.error("Order insert error");
-        setSubmitError('A apărut o eroare la salvarea comenzii. Te rugăm să încerci din nou.');
+        console.error("Order insert error:", orderError.message, orderError.details, orderError.code);
+        setSubmitError(`A apărut o eroare la salvarea comenzii: ${orderError.message}`);
         setIsSubmitting(false);
         return;
       }
@@ -172,8 +172,8 @@ export default function CheckoutPage() {
         .insert(orderItemsToInsert);
 
       if (itemsError) {
-        console.error("Order items insert error");
-        setSubmitError('A apărut o eroare la salvarea produselor. Te rugăm să încerci din nou.');
+        console.error("Order items insert error:", itemsError.message, itemsError.details, itemsError.code);
+        setSubmitError(`A apărut o eroare la salvarea produselor: ${itemsError.message}`);
         setIsSubmitting(false);
         return;
       }
