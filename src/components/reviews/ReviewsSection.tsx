@@ -122,7 +122,7 @@ export function ReviewsSection({
         </div>
 
         <div className="flex items-center gap-3">
-          {totalPages > 1 && (
+          {variant !== 'homepage' && totalPages > 1 && (
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setCurrentPage(Math.max(0, currentPage - 1))}
@@ -161,25 +161,38 @@ export function ReviewsSection({
         </div>
       )}
 
-      {/* Reviews Grid */}
+      {/* Reviews */}
       {reviews.length > 0 ? (
-        <div className={`grid gap-6 ${
-          variant === 'homepage'
-            ? 'grid-cols-1 md:grid-cols-3'
-            : 'grid-cols-1 md:grid-cols-2'
-        }`}>
-          {displayedReviews.map((review) => (
-            <ReviewCard
-              key={review.id}
-              customerName={review.customer_name}
-              rating={review.rating}
-              reviewText={review.review_text}
-              productType={review.product_type || undefined}
-              createdAt={review.created_at}
-              variant={variant === 'homepage' ? 'compact' : 'default'}
-            />
-          ))}
-        </div>
+        variant === 'homepage' ? (
+          <div className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory -mx-6 px-6" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            {reviews.map((review) => (
+              <div key={review.id} className="snap-start">
+                <ReviewCard
+                  customerName={review.customer_name}
+                  rating={review.rating}
+                  reviewText={review.review_text}
+                  productType={review.product_type || undefined}
+                  createdAt={review.created_at}
+                  variant="compact"
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
+            {displayedReviews.map((review) => (
+              <ReviewCard
+                key={review.id}
+                customerName={review.customer_name}
+                rating={review.rating}
+                reviewText={review.review_text}
+                productType={review.product_type || undefined}
+                createdAt={review.created_at}
+                variant="default"
+              />
+            ))}
+          </div>
+        )
       ) : (
         <div className="text-center py-16 rounded-3xl bg-foreground/[0.02] border border-foreground/5">
           <MessageSquare className="w-12 h-12 mx-auto text-foreground/20 mb-4" />

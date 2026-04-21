@@ -30,7 +30,7 @@ export function ReviewCard({ customerName, rating, reviewText, productType, crea
 
   if (variant === 'compact') {
     return (
-      <div className="p-6 rounded-2xl bg-background border border-foreground/5 shadow-lg shadow-foreground/5 hover:shadow-xl transition-shadow">
+      <div className="p-6 rounded-2xl bg-background border border-foreground/5 shadow-lg shadow-foreground/5 hover:shadow-xl transition-shadow w-[340px] min-w-[340px] flex flex-col">
         <div className="flex items-center gap-1 mb-3">
           {[1, 2, 3, 4, 5].map((star) => (
             <Star
@@ -39,7 +39,7 @@ export function ReviewCard({ customerName, rating, reviewText, productType, crea
             />
           ))}
         </div>
-        <p className="text-foreground/80 text-sm leading-relaxed mb-4 line-clamp-3">&ldquo;{reviewText}&rdquo;</p>
+        <p className="text-foreground/80 text-sm leading-relaxed mb-4 flex-grow">&ldquo;{reviewText}&rdquo;</p>
         <div className="flex items-center justify-between">
           <span className="text-sm font-semibold text-foreground/90">{customerName}</span>
           {productLabel && (
