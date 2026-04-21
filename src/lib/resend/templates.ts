@@ -107,7 +107,9 @@ export function orderConfirmationEmail(order: OrderData): { subject: string; htm
           <!-- Header -->
           <tr>
             <td style="background-color: #1A1A1A; padding: 32px; text-align: center;">
-              <h1 style="color: #F0EDE8; margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 1px;">NUMARUL.RO</h1>
+              <a href="https://numarul.ro" style="text-decoration: none;">
+                <img src="https://numarul.ro/logo-dark.svg" alt="numarul.ro" width="200" height="44" style="display: inline-block; max-width: 200px; height: auto;" />
+              </a>
             </td>
           </tr>
 
@@ -226,7 +228,9 @@ export function postDeliveryEmail(data: PostDeliveryEmailData): { subject: strin
           <!-- Header -->
           <tr>
             <td style="background-color: #1A1A1A; padding: 32px; text-align: center;">
-              <h1 style="color: #F0EDE8; margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 1px;">NUMARUL.RO</h1>
+              <a href="https://numarul.ro" style="text-decoration: none;">
+                <img src="https://numarul.ro/logo-dark.svg" alt="numarul.ro" width="200" height="44" style="display: inline-block; max-width: 200px; height: auto;" />
+              </a>
             </td>
           </tr>
 
@@ -439,7 +443,9 @@ export function paymentConfirmedEmail(order: OrderData): { subject: string; html
           <!-- Header -->
           <tr>
             <td style="background-color: #1A1A1A; padding: 32px; text-align: center;">
-              <h1 style="color: #F0EDE8; margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 1px;">NUMARUL.RO</h1>
+              <a href="https://numarul.ro" style="text-decoration: none;">
+                <img src="https://numarul.ro/logo-dark.svg" alt="numarul.ro" width="200" height="44" style="display: inline-block; max-width: 200px; height: auto;" />
+              </a>
             </td>
           </tr>
 
