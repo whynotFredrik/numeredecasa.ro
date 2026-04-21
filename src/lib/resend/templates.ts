@@ -325,10 +325,12 @@ export function reviewRewardEmail(data: ReviewRewardEmailData): { subject: strin
       <td align="center">
         <table width="600" cellpadding="0" cellspacing="0" style="background-color: #FDFCFA; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
 
-          <!-- Header -->
+          <!-- Header cu Logo -->
           <tr>
             <td style="background-color: #1A1A1A; padding: 32px; text-align: center;">
-              <h1 style="color: #F0EDE8; margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 1px;">NUMARUL.RO</h1>
+              <a href="https://numarul.ro" style="text-decoration: none;">
+                <img src="https://numarul.ro/logo-dark.svg" alt="numarul.ro" width="200" height="44" style="display: inline-block; max-width: 200px; height: auto;" />
+              </a>
             </td>
           </tr>
 

@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
         source_order_id: order_id,
         source_customer_name: customer_name,
         source_customer_email: customer_email,
-        max_uses: 3,
+        max_uses: 2,
       })
       .select()
       .single();

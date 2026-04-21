@@ -85,6 +85,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Verifică dacă acest email a lăsat deja o recenzie
+    const { data: existingReview } = await supabaseAdmin
+      .from('reviews')
+      .select('id')
+      .eq('customer_email', customer_email)
+      .limit(1)
+      .single();
+
+    if (existingReview) {
+      return NextResponse.json(
+        { error: 'Ai lăsat deja o recenzie. Mulțumim pentru feedback!' },
+        { status: 409 }
+      );
+    }
+
     // Verifică dacă order_id există (dacă a fost furnizat)
     if (order_id) {
       const { data: order } = await supabaseAdmin
@@ -157,7 +172,7 @@ export async function POST(request: NextRequest) {
             source_order_id: order_id || null,
             source_customer_name: customer_name,
             source_customer_email: customer_email,
-            max_uses: 3,
+            max_uses: 2,
           })
           .select()
           .single();
@@ -170,7 +185,7 @@ export async function POST(request: NextRequest) {
             discountCode: newCode.code,
             discountPercent: 15,
             expiresAt: newCode.expires_at,
-            maxUses: 3,
+            maxUses: 2,
           });
 
           const { error: emailError } = await resend.emails.send({

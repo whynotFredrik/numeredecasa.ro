@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
             discountCode: '', // Codul se generează la completarea recenziei
             discountPercent: 15,
             expiresAt: '',
-            maxUses: 3,
+            maxUses: 2,
           });
 
           loopsEventSent = loopsResult.success;
