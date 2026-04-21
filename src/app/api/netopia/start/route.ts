@@ -54,7 +54,8 @@ export async function POST(request: NextRequest) {
     }, 0);
 
     const shippingCost = SHIPPING_COSTS[order.shipping_method] || 0;
-    const verifiedTotal = itemsTotal + shippingCost;
+    const discountAmount = parseFloat(order.discount_amount || '0');
+    const verifiedTotal = itemsTotal + shippingCost - discountAmount;
 
     // Verify the stored total matches the recalculated total
     const storedTotal = parseFloat(order.total_amount);
@@ -73,7 +74,7 @@ export async function POST(request: NextRequest) {
 
     const apiUrl = isLive
       ? 'https://secure.netopia-payments.com'
-      : 'https://secure-sandbox.netopia-payments.com';
+      : 'https://secure.sandbox.netopia-payments.com';
 
     const paymentPayload = {
       config: {
