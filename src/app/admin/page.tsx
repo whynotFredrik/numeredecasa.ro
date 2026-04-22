@@ -227,7 +227,7 @@ export default function AdminDashboard() {
                   <td className="py-3 px-4 text-sm font-medium">{order.customerName}</td>
                   <td className="py-3 px-4 text-sm text-foreground/60">{order.email}</td>
                   <td className="py-3 px-4 text-sm text-right font-semibold">
-                    {order.totalAmount.toFixed(2)} RON
+                    {(order.totalAmount || 0).toFixed(2)} RON
                   </td>
                   <td className="py-3 px-4 text-center">
                     <StatusBadge status={order.paymentStatus} type="payment" />

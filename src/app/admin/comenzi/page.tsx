@@ -227,7 +227,7 @@ export default function OrdersPage() {
                     </td>
                     <td className="py-3 px-4 text-sm text-foreground/60">{order.customer_email}</td>
                     <td className="py-3 px-4 text-sm text-right font-semibold">
-                      {order.total_amount.toFixed(2)} RON
+                      {(order.total_amount || 0).toFixed(2)} RON
                     </td>
                     <td className="py-3 px-4 text-center">
                       <StatusBadge status={order.payment_status} type="payment" />
@@ -312,11 +312,11 @@ function OrderDetails({
             )}
             <div className="flex justify-between">
               <span className="text-foreground/60">Livrare:</span>
-              <span className="font-medium">{order.shipping_cost.toFixed(2)} RON</span>
+              <span className="font-medium">{(order.shipping_cost || 0).toFixed(2)} RON</span>
             </div>
             <div className="flex justify-between border-t border-foreground/10 pt-2 mt-2">
               <span className="font-semibold">Total:</span>
-              <span className="font-bold">{order.total_amount.toFixed(2)} RON</span>
+              <span className="font-bold">{(order.total_amount || 0).toFixed(2)} RON</span>
             </div>
           </div>
         </div>
