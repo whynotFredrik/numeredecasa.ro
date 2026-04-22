@@ -1,15 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Open_Sans } from "next/font/google";
-import "./globals.css";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
-import { CartSidebar } from "@/components/cart/CartSidebar";
-import { CookieBanner } from "@/components/layout/CookieBanner";
-import {
-  OrganizationJsonLd,
-  LocalBusinessJsonLd,
-  WebSiteJsonLd,
-} from "@/components/seo/JsonLd";
+import "./(site)/globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -104,14 +95,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${openSans.variable} font-sans antialiased`}
       >
-        <OrganizationJsonLd />
-        <LocalBusinessJsonLd />
-        <WebSiteJsonLd />
-        <Navbar />
-        <CartSidebar />
         {children}
-        <Footer />
-        <CookieBanner />
       </body>
     </html>
   );
