@@ -108,7 +108,7 @@ export function orderConfirmationEmail(order: OrderData): { subject: string; htm
           <tr>
             <td style="background-color: #1A1A1A; padding: 32px; text-align: center;">
               <a href="https://numarul.ro" style="text-decoration: none;">
-                <img src="https://numarul.ro/logo-dark.svg" alt="numarul.ro" width="200" height="44" style="display: inline-block; max-width: 200px; height: auto;" />
+                <img src="https://www.numarul.ro/logo-dark-email.png" alt="numarul.ro" width="218" height="40" style="display: inline-block; max-width: 218px; height: auto;" />
               </a>
             </td>
           </tr>
@@ -229,7 +229,7 @@ export function postDeliveryEmail(data: PostDeliveryEmailData): { subject: strin
           <tr>
             <td style="background-color: #1A1A1A; padding: 32px; text-align: center;">
               <a href="https://numarul.ro" style="text-decoration: none;">
-                <img src="https://numarul.ro/logo-dark.svg" alt="numarul.ro" width="200" height="44" style="display: inline-block; max-width: 200px; height: auto;" />
+                <img src="https://www.numarul.ro/logo-dark-email.png" alt="numarul.ro" width="218" height="40" style="display: inline-block; max-width: 218px; height: auto;" />
               </a>
             </td>
           </tr>
@@ -333,7 +333,7 @@ export function reviewRewardEmail(data: ReviewRewardEmailData): { subject: strin
           <tr>
             <td style="background-color: #1A1A1A; padding: 32px; text-align: center;">
               <a href="https://numarul.ro" style="text-decoration: none;">
-                <img src="https://numarul.ro/logo-dark.svg" alt="numarul.ro" width="200" height="44" style="display: inline-block; max-width: 200px; height: auto;" />
+                <img src="https://www.numarul.ro/logo-dark-email.png" alt="numarul.ro" width="218" height="40" style="display: inline-block; max-width: 218px; height: auto;" />
               </a>
             </td>
           </tr>
@@ -444,7 +444,7 @@ export function paymentConfirmedEmail(order: OrderData): { subject: string; html
           <tr>
             <td style="background-color: #1A1A1A; padding: 32px; text-align: center;">
               <a href="https://numarul.ro" style="text-decoration: none;">
-                <img src="https://numarul.ro/logo-dark.svg" alt="numarul.ro" width="200" height="44" style="display: inline-block; max-width: 200px; height: auto;" />
+                <img src="https://www.numarul.ro/logo-dark-email.png" alt="numarul.ro" width="218" height="40" style="display: inline-block; max-width: 218px; height: auto;" />
               </a>
             </td>
           </tr>
