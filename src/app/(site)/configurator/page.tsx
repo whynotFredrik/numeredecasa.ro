@@ -77,7 +77,7 @@ export default function Configurator() {
                     <div
                       className={`flex flex-col w-[70%] max-w-[350px] mx-auto z-10 transition-all duration-500 ease-out ${fc.text}`}
                     >
-                      <div className="w-full flex justify-end relative z-20">
+                      <div className={`w-full flex relative z-20 ${officeFunction.trim() ? 'justify-end' : 'justify-center'}`}>
                         <motion.div
                           key={officeName}
                           initial={{ opacity: 0, y: 10 }}
@@ -95,22 +95,24 @@ export default function Configurator() {
 
                       <div className={`w-full h-3 md:h-5 rounded-sm shadow-lg relative z-10 ${fc.bg}`}></div>
 
-                      <div className="w-full flex justify-start relative z-20">
-                        <motion.div
-                          key={officeFunction}
-                          initial={{ opacity: 0, y: -10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className="font-bold tracking-wider uppercase whitespace-nowrap"
-                          style={{
-                            fontFamily: "var(--font-open-sans), sans-serif",
-                            marginTop: '-0.20em',
-                            lineHeight: 1,
-                            fontSize: `calc(clamp(0.8rem, 2vw, 1.5rem) * ${Math.min(1, 20 / Math.max(1, officeFunction.length))})`
-                          }}
-                        >
-                          {officeFunction}
-                        </motion.div>
-                      </div>
+                      {officeFunction.trim() && (
+                        <div className={`w-full flex relative z-20 ${officeName.trim() ? 'justify-start' : 'justify-center'}`}>
+                          <motion.div
+                            key={officeFunction}
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="font-bold tracking-wider uppercase whitespace-nowrap"
+                            style={{
+                              fontFamily: "var(--font-open-sans), sans-serif",
+                              marginTop: '-0.20em',
+                              lineHeight: 1,
+                              fontSize: `calc(clamp(0.8rem, 2vw, 1.5rem) * ${Math.min(1, 20 / Math.max(1, officeFunction.length))})`
+                            }}
+                          >
+                            {officeFunction}
+                          </motion.div>
+                        </div>
+                      )}
                     </div>
                   )}
 
