@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useCartStore } from '@/store/cartStore';
-import { ChevronRight, CreditCard, Truck, ShieldCheck, MapPin, Package, Check, Loader2, X, Banknote, Tag, CheckCircle } from 'lucide-react';
+import { ChevronRight, CreditCard, Truck, ShieldCheck, MapPin, Package, Loader2, X, Banknote, Tag, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import { LockerMapPicker, type LockerData } from '@/components/checkout/LockerMapPicker';
 import { supabase } from '@/lib/supabase/client';
@@ -32,7 +32,6 @@ export default function CheckoutPage() {
 
   // Submission states
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
   const [submitError, setSubmitError] = useState('');
 
   useEffect(() => {
@@ -188,7 +187,7 @@ export default function CheckoutPage() {
       // 4. Plată ramburs — nu trebuie Netopia
       if (paymentMethod === 'ramburs') {
         clearCart();
-        setIsSuccess(true);
+        window.location.href = `/comanda-finalizata?orderId=${orderId}`;
         return;
       }
 
@@ -235,9 +234,9 @@ export default function CheckoutPage() {
         return;
       }
 
-      // Dacă Netopia nu dă URL dar confirmă succesul, afișăm confirmarea
+      // Dacă Netopia nu dă URL dar confirmă succesul, redirecționăm către pagina de confirmare
       clearCart();
-      setIsSuccess(true);
+      window.location.href = `/comanda-finalizata?orderId=${orderId}`;
 
     } catch (err: any) {
       setSubmitError('A apărut o eroare neașteptată. Te rugăm să încerci din nou.');
@@ -245,28 +244,6 @@ export default function CheckoutPage() {
       setIsSubmitting(false);
     }
   };
-
-  if (isSuccess) {
-    return (
-      <main className="min-h-screen pt-32 pb-12 px-6 flex items-center justify-center bg-foreground/[0.02]">
-        <div className="text-center space-y-6 max-w-lg">
-          <div className="w-24 h-24 mx-auto bg-green-500/10 text-green-500 rounded-full flex items-center justify-center">
-            <Check className="w-12 h-12" />
-          </div>
-          <h1 className="text-3xl font-bold">Comandă plasată cu succes!</h1>
-          <p className="text-foreground/60">
-            Îți mulțumim pentru comandă, {firstName}. Datele au fost salvate securizat în sistem și vei fi contactat în scurt timp pentru confirmare.
-          </p>
-          <Link 
-            href="/"
-            className="inline-block mt-4 bg-primary text-white font-bold px-8 py-4 rounded-xl hover:bg-primary/90 transition-colors"
-          >
-            Întoarce-te pe pagina principală
-          </Link>
-        </div>
-      </main>
-    );
-  }
 
   return (
     <main className="min-h-screen pt-24 pb-12 px-6 lg:px-12 bg-foreground/[0.02]">

@@ -73,6 +73,9 @@ export function Navbar() {
                         <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-primary transition-colors py-2 border-b border-foreground/5">
                             Contact
                         </Link>
+                        <Link href="/urmarire-comanda" onClick={() => setMobileMenuOpen(false)} className="text-sm text-foreground/70 hover:text-primary transition-colors py-1">
+                            Urmărire Comandă
+                        </Link>
                         <Link href="/termeni" onClick={() => setMobileMenuOpen(false)} className="text-sm text-foreground/50 hover:text-primary transition-colors py-1">
                             Termeni și Condiții
                         </Link>

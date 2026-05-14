@@ -28,6 +28,7 @@ export function Footer() {
                     <ul className="space-y-3 text-sm text-foreground/60">
                         <li><Link href="/produse" className="hover:text-primary transition-colors">Toate Produsele</Link></li>
                         <li><Link href="/configurator" className="hover:text-primary transition-colors">Configurator Live</Link></li>
+                        <li><Link href="/urmarire-comanda" className="hover:text-primary transition-colors">Urmărire Comandă</Link></li>
                         <li><Link href="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
                     </ul>
                 </div>

@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
   try {
     const { data: order, error } = await supabaseAdmin
       .from('orders')
-      .select('id, payment_status, customer_first_name')
+      .select('id, payment_status, payment_method, order_status, customer_first_name')
       .eq('id', orderId)
       .single();
 
@@ -33,6 +33,8 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       orderId: order.id,
       paymentStatus: order.payment_status,
+      paymentMethod: order.payment_method,
+      orderStatus: order.order_status,
       firstName: order.customer_first_name,
     });
   } catch {
