@@ -27,6 +27,65 @@ interface RawLocation {
 const ROMANIA_CENTER: [number, number] = [45.9432, 24.9668];
 const ROMANIA_ZOOM = 7;
 
+// Reședințe de județ (normalizate fără diacritice) — folosite pentru a ridica
+// reședința de județ în fruntea listei de localități.
+const COUNTY_SEATS: Record<string, string> = {
+  'alba': 'alba iulia',
+  'arad': 'arad',
+  'arges': 'pitesti',
+  'bacau': 'bacau',
+  'bihor': 'oradea',
+  'bistrita-nasaud': 'bistrita',
+  'bistrita nasaud': 'bistrita',
+  'botosani': 'botosani',
+  'brasov': 'brasov',
+  'braila': 'braila',
+  'bucuresti': 'bucuresti',
+  'buzau': 'buzau',
+  'calarasi': 'calarasi',
+  'caras-severin': 'resita',
+  'caras severin': 'resita',
+  'cluj': 'cluj-napoca',
+  'constanta': 'constanta',
+  'covasna': 'sfantu gheorghe',
+  'dambovita': 'targoviste',
+  'dolj': 'craiova',
+  'galati': 'galati',
+  'giurgiu': 'giurgiu',
+  'gorj': 'targu jiu',
+  'harghita': 'miercurea ciuc',
+  'hunedoara': 'deva',
+  'ialomita': 'slobozia',
+  'iasi': 'iasi',
+  'ilfov': 'buftea',
+  'maramures': 'baia mare',
+  'mehedinti': 'drobeta-turnu severin',
+  'mures': 'targu mures',
+  'neamt': 'piatra neamt',
+  'olt': 'slatina',
+  'prahova': 'ploiesti',
+  'salaj': 'zalau',
+  'satu mare': 'satu mare',
+  'satu-mare': 'satu mare',
+  'sibiu': 'sibiu',
+  'suceava': 'suceava',
+  'teleorman': 'alexandria',
+  'timis': 'timisoara',
+  'tulcea': 'tulcea',
+  'valcea': 'ramnicu valcea',
+  'vaslui': 'vaslui',
+  'vrancea': 'focsani',
+};
+
+function normalizeName(s: string): string {
+  return s
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-z0-9 -]/g, '')
+    .trim();
+}
+
 export function LockerMapPicker({ onLockerSelect, selectedLocker }: LockerMapPickerProps) {
   const mapRef = useRef<any>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -35,7 +94,8 @@ export function LockerMapPicker({ onLockerSelect, selectedLocker }: LockerMapPic
 
   const [counties, setCounties] = useState<RawLocation[]>([]);
   const [selectedCountyId, setSelectedCountyId] = useState('');
-  const [cities, setCities] = useState<RawLocation[]>([]);
+  const [cities, setCities] = useState<Array<{ id: string; name: string }>>([]);
+  const [lockersByCity, setLockersByCity] = useState<Record<string, RawLocation[]>>({});
   const [selectedCityId, setSelectedCityId] = useState('');
   const [locations, setLocations] = useState<RawLocation[]>([]);
   const [loadingCounties, setLoadingCounties] = useState(false);
@@ -116,10 +176,13 @@ export function LockerMapPicker({ onLockerSelect, selectedLocker }: LockerMapPic
       .finally(() => setLoadingCounties(false));
   }, []);
 
-  // Load cities when county changes
+  // On county change: fetch ALL lockers for the county, derive the list of
+  // localities (cities) from them — keep only those that actually have lockers.
+  // The county seat is sorted to the top.
   useEffect(() => {
     // Reset downstream state whenever county changes
     setCities([]);
+    setLockersByCity({});
     setSelectedCityId('');
     setLocations([]);
     setSearchTerm('');
@@ -130,52 +193,73 @@ export function LockerMapPicker({ onLockerSelect, selectedLocker }: LockerMapPic
     if (!selectedCountyId) return;
 
     setLoadingCities(true);
+    setLoadingLocations(true);
     setError('');
 
-    fetch(`/api/woot/cities?county_id=${selectedCountyId}`)
+    fetch(`/api/woot/lockers?county_id=${selectedCountyId}`)
       .then((res) => res.json())
       .then((data) => {
         if (data?.error) { setError(data.error); return; }
-        const list = Array.isArray(data) ? data : data?.list || data?.data || [];
-        // Sort cities alphabetically in Romanian for usability
-        list.sort((a: any, b: any) => {
-          const nameA = String(a.name ?? a.city_name ?? '');
-          const nameB = String(b.name ?? b.city_name ?? '');
-          return nameA.localeCompare(nameB, 'ro');
-        });
-        setCities(list);
-      })
-      .catch(() => setError('Nu s-au putut încărca localitățile.'))
-      .finally(() => setLoadingCities(false));
-  }, [selectedCountyId]);
+        const list: RawLocation[] = Array.isArray(data) ? data : data?.list || data?.data || [];
 
-  // Load lockers when city changes (scoped to selected county + city)
+        // Group lockers by city. Prefer city_id as key; fall back to lowercased city_name.
+        const groups: Record<string, RawLocation[]> = {};
+        const cityNames: Record<string, string> = {};
+        for (const locker of list) {
+          const name = String(locker.city_name ?? locker.city ?? '').trim();
+          if (!name) continue;
+          const idRaw = String(locker.city_id ?? '').trim();
+          const key = idRaw || name.toLowerCase();
+          if (!groups[key]) {
+            groups[key] = [];
+            cityNames[key] = name;
+          }
+          groups[key].push(locker);
+        }
+
+        // Identify the county seat for sorting
+        const countyObj = counties.find(
+          (c) => String(c.id ?? c.county_id ?? '') === selectedCountyId
+        );
+        const countyName = countyObj
+          ? String(countyObj.name ?? countyObj.county_name ?? '')
+          : '';
+        const seatNorm = countyName ? COUNTY_SEATS[normalizeName(countyName)] || null : null;
+
+        // Build sorted city list: county seat first, the rest alphabetical (Romanian)
+        const cityList = Object.keys(groups).map((key) => ({ id: key, name: cityNames[key] }));
+        cityList.sort((a, b) => {
+          if (seatNorm) {
+            const aIsSeat = normalizeName(a.name) === seatNorm;
+            const bIsSeat = normalizeName(b.name) === seatNorm;
+            if (aIsSeat && !bIsSeat) return -1;
+            if (bIsSeat && !aIsSeat) return 1;
+          }
+          return a.name.localeCompare(b.name, 'ro');
+        });
+
+        setCities(cityList);
+        setLockersByCity(groups);
+      })
+      .catch(() => setError('Nu s-au putut încărca lockerele.'))
+      .finally(() => {
+        setLoadingCities(false);
+        setLoadingLocations(false);
+      });
+  }, [selectedCountyId, counties]);
+
+  // On city change: just filter the already-loaded lockers by city. No fetch.
   useEffect(() => {
-    setLocations([]);
     setSearchTerm('');
     onLockerSelect(null);
-    if (!selectedCountyId || !selectedCityId) {
+    if (!selectedCityId) {
+      setLocations([]);
       if (markersRef.current) markersRef.current.clearLayers();
       if (mapRef.current) mapRef.current.setView(ROMANIA_CENTER, ROMANIA_ZOOM);
       return;
     }
-
-    setLoadingLocations(true);
-    setError('');
-
-    fetch(`/api/woot/lockers?county_id=${selectedCountyId}&city_id=${selectedCityId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.error) {
-          setLocations([]);
-          return;
-        }
-        const list = Array.isArray(data) ? data : data?.list || data?.data || [];
-        setLocations(list);
-      })
-      .catch(() => setError('Nu s-au putut încărca lockerele.'))
-      .finally(() => setLoadingLocations(false));
-  }, [selectedCountyId, selectedCityId]);
+    setLocations(lockersByCity[selectedCityId] || []);
+  }, [selectedCityId, lockersByCity]);
 
   // Update map markers when locations change
   useEffect(() => {
@@ -397,8 +481,8 @@ export function LockerMapPicker({ onLockerSelect, selectedLocker }: LockerMapPic
                     : 'Selectează localitatea'}
             </option>
             {cities.map((c, i) => (
-              <option key={c.id ?? c.city_id ?? i} value={String(c.id ?? c.city_id ?? '')}>
-                {String(c.name ?? c.city_name ?? '')}
+              <option key={c.id || i} value={c.id}>
+                {c.name}
               </option>
             ))}
           </select>
