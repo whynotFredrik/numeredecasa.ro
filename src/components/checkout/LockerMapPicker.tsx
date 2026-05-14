@@ -35,8 +35,11 @@ export function LockerMapPicker({ onLockerSelect, selectedLocker }: LockerMapPic
 
   const [counties, setCounties] = useState<RawLocation[]>([]);
   const [selectedCountyId, setSelectedCountyId] = useState('');
+  const [cities, setCities] = useState<RawLocation[]>([]);
+  const [selectedCityId, setSelectedCityId] = useState('');
   const [locations, setLocations] = useState<RawLocation[]>([]);
   const [loadingCounties, setLoadingCounties] = useState(false);
+  const [loadingCities, setLoadingCities] = useState(false);
   const [loadingLocations, setLoadingLocations] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [error, setError] = useState('');
@@ -113,12 +116,45 @@ export function LockerMapPicker({ onLockerSelect, selectedLocker }: LockerMapPic
       .finally(() => setLoadingCounties(false));
   }, []);
 
-  // Load locations when county changes
+  // Load cities when county changes
+  useEffect(() => {
+    // Reset downstream state whenever county changes
+    setCities([]);
+    setSelectedCityId('');
+    setLocations([]);
+    setSearchTerm('');
+    onLockerSelect(null);
+    if (markersRef.current) markersRef.current.clearLayers();
+    if (mapRef.current) mapRef.current.setView(ROMANIA_CENTER, ROMANIA_ZOOM);
+
+    if (!selectedCountyId) return;
+
+    setLoadingCities(true);
+    setError('');
+
+    fetch(`/api/woot/cities?county_id=${selectedCountyId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.error) { setError(data.error); return; }
+        const list = Array.isArray(data) ? data : data?.list || data?.data || [];
+        // Sort cities alphabetically in Romanian for usability
+        list.sort((a: any, b: any) => {
+          const nameA = String(a.name ?? a.city_name ?? '');
+          const nameB = String(b.name ?? b.city_name ?? '');
+          return nameA.localeCompare(nameB, 'ro');
+        });
+        setCities(list);
+      })
+      .catch(() => setError('Nu s-au putut încărca localitățile.'))
+      .finally(() => setLoadingCities(false));
+  }, [selectedCountyId]);
+
+  // Load lockers when city changes (scoped to selected county + city)
   useEffect(() => {
     setLocations([]);
     setSearchTerm('');
     onLockerSelect(null);
-    if (!selectedCountyId) {
+    if (!selectedCountyId || !selectedCityId) {
       if (markersRef.current) markersRef.current.clearLayers();
       if (mapRef.current) mapRef.current.setView(ROMANIA_CENTER, ROMANIA_ZOOM);
       return;
@@ -127,7 +163,7 @@ export function LockerMapPicker({ onLockerSelect, selectedLocker }: LockerMapPic
     setLoadingLocations(true);
     setError('');
 
-    fetch(`/api/woot/lockers?county_id=${selectedCountyId}`)
+    fetch(`/api/woot/lockers?county_id=${selectedCountyId}&city_id=${selectedCityId}`)
       .then((res) => res.json())
       .then((data) => {
         if (data.error) {
@@ -139,7 +175,7 @@ export function LockerMapPicker({ onLockerSelect, selectedLocker }: LockerMapPic
       })
       .catch(() => setError('Nu s-au putut încărca lockerele.'))
       .finally(() => setLoadingLocations(false));
-  }, [selectedCountyId]);
+  }, [selectedCountyId, selectedCityId]);
 
   // Update map markers when locations change
   useEffect(() => {
@@ -325,7 +361,7 @@ export function LockerMapPicker({ onLockerSelect, selectedLocker }: LockerMapPic
         </div>
       )}
 
-      {/* County selector */}
+      {/* County + City selectors */}
       <div className="flex gap-3 items-end">
         <div className="flex-1 space-y-1.5">
           <label className="text-sm font-semibold text-foreground/70">Județ</label>
@@ -339,6 +375,30 @@ export function LockerMapPicker({ onLockerSelect, selectedLocker }: LockerMapPic
             {counties.map((c, i) => (
               <option key={c.id ?? c.county_id ?? i} value={String(c.id ?? c.county_id ?? '')}>
                 {String(c.name ?? c.county_name ?? '')}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex-1 space-y-1.5">
+          <label className="text-sm font-semibold text-foreground/70">Localitate</label>
+          <select
+            value={selectedCityId}
+            onChange={(e) => { setError(''); setSelectedCityId(e.target.value); }}
+            disabled={!selectedCountyId || loadingCities}
+            className="w-full bg-foreground/[0.02] border border-foreground/10 rounded-xl px-4 py-3 focus:ring-2 focus:ring-primary outline-none transition-all appearance-none disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <option value="">
+              {!selectedCountyId
+                ? 'Selectează mai întâi județul'
+                : loadingCities
+                  ? 'Se încarcă...'
+                  : cities.length === 0
+                    ? 'Nicio localitate disponibilă'
+                    : 'Selectează localitatea'}
+            </option>
+            {cities.map((c, i) => (
+              <option key={c.id ?? c.city_id ?? i} value={String(c.id ?? c.city_id ?? '')}>
+                {String(c.name ?? c.city_name ?? '')}
               </option>
             ))}
           </select>
@@ -373,13 +433,13 @@ export function LockerMapPicker({ onLockerSelect, selectedLocker }: LockerMapPic
       </div>
 
       {/* Location list below map */}
-      {selectedCountyId && !loadingLocations && (
+      {selectedCountyId && selectedCityId && !loadingLocations && (
         <div className="space-y-3">
           {locations.length === 0 ? (
             <div className="text-center py-6 text-foreground/50">
               <Package className="w-8 h-8 mx-auto mb-2 opacity-40" />
-              <p className="text-sm">Nu s-au găsit lockere în acest județ.</p>
-              <p className="text-xs mt-1">Încearcă alt județ sau alege livrare la domiciliu.</p>
+              <p className="text-sm">Nu s-au găsit lockere în această localitate.</p>
+              <p className="text-xs mt-1">Încearcă altă localitate sau alege livrare la domiciliu.</p>
             </div>
           ) : (
             <>
