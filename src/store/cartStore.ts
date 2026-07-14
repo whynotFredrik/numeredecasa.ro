@@ -8,6 +8,7 @@ export interface CartItem {
   productType: ProductType;
   mainNumber: string;
   streetName: string;
+  includeStreet: boolean;
   officeName: string;
   officeFunction: string;
   officeOrientation: 'lateral' | 'centered';
@@ -71,6 +72,15 @@ export const useCartStore = create<CartStore>()(
     }),
     {
       name: 'numeredecasa-cart-storage',
+      merge: (persisted, current) => {
+        const state = { ...current, ...(persisted as Partial<CartStore>) };
+        // Guard against old persisted carts missing `includeStreet`
+        state.items = (state.items ?? []).map((item) => ({
+          ...item,
+          includeStreet: item.includeStreet ?? true,
+        }));
+        return state;
+      },
     }
   )
 );

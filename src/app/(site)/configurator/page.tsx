@@ -15,9 +15,10 @@ export default function Configurator() {
   const [officeFunction, setOfficeFunction] = useState('MEDIC STOMATOLOG');
   const [officeOrientation, setOfficeOrientation] = useState<'lateral' | 'centered'>('lateral');
   const [houseOrientation, setHouseOrientation] = useState<'lateral' | 'centered'>('lateral');
+  const [includeStreet, setIncludeStreet] = useState(true);
   const [finish, setFinish] = useState<'black' | 'white' | 'brown' | 'lightgray'>('black');
 
-  const basePrice = productType === 'house' ? 129 : productType === 'apartment' ? 89 : 159;
+  const basePrice = productType === 'house' ? (includeStreet ? 149 : 129) : productType === 'apartment' ? 89 : 159;
   const totalPrice = basePrice;
 
   // Color config for each finish
@@ -35,7 +36,8 @@ export default function Configurator() {
     addItem({
       productType,
       mainNumber,
-      streetName,
+      streetName: productType === 'house' && !includeStreet ? '' : streetName,
+      includeStreet: productType === 'house' ? includeStreet : true,
       officeName,
       officeFunction,
       officeOrientation,
@@ -157,7 +159,7 @@ export default function Configurator() {
                   )}
 
                   {/* HOUSE VERSION — LATERAL */}
-                  {productType === 'house' && houseOrientation === 'lateral' && (
+                  {productType === 'house' && includeStreet && houseOrientation === 'lateral' && (
                     <div
                       className={`flex flex-col items-end w-full max-w-[500px] mx-auto z-10 transition-all duration-500 ease-out ${fc.text}`}
                     >
@@ -201,7 +203,7 @@ export default function Configurator() {
                   )}
 
                   {/* HOUSE VERSION — CENTRAT */}
-                  {productType === 'house' && houseOrientation === 'centered' && (
+                  {productType === 'house' && includeStreet && houseOrientation === 'centered' && (
                     <div
                       className={`flex flex-col items-center w-fit mx-auto z-10 transition-all duration-500 ease-out ${fc.text}`}
                     >
@@ -239,6 +241,32 @@ export default function Configurator() {
                       >
                         {streetName || 'STRADA'}
                       </motion.div>
+                    </div>
+                  )}
+
+                  {/* HOUSE VERSION — DOAR NUMĂR */}
+                  {productType === 'house' && !includeStreet && (
+                    <div
+                      className={`flex flex-col items-center w-fit mx-auto z-10 transition-all duration-500 ease-out ${fc.text}`}
+                    >
+                      <motion.div
+                        key={`${mainNumber}-onlynumber`}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="leading-none tracking-tighter relative z-20 text-center"
+                        style={{
+                          fontFamily: "var(--font-open-sans), sans-serif",
+                          fontWeight: 700,
+                          fontSize: 'clamp(6rem, 14vw, 11rem)',
+                          marginBottom: '-0.15em'
+                        }}
+                      >
+                        {mainNumber || '10'}
+                      </motion.div>
+
+                      <div className={`h-3 md:h-5 rounded-sm shadow-lg relative z-10 ${fc.bg}`}
+                        style={{ width: 'calc(100% + 0.5rem)' }}
+                      ></div>
                     </div>
                   )}
 
@@ -314,8 +342,40 @@ export default function Configurator() {
               </div>
               )}
 
+              {/* Content Selection (House only) */}
+              {productType === 'house' && (
+                <div className="space-y-3 animate-in fade-in">
+                  <label className="text-sm font-semibold">Conținut Plăcuță</label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      onClick={() => setIncludeStreet(true)}
+                      className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${includeStreet ? 'border-primary bg-primary/5 ring-1 ring-primary/20' : 'border-foreground/10 hover:border-foreground/30'}`}
+                    >
+                      <div className="w-full h-12 flex flex-col items-center justify-center px-2 bg-foreground/[0.03] rounded-lg">
+                        <div className="text-[8px] font-bold text-foreground/60 leading-tight">25</div>
+                        <div className="w-8 h-[2px] bg-foreground/20 my-[1px]"></div>
+                        <div className="text-[5px] text-foreground/40 leading-tight text-center">STR EXEMPLU</div>
+                      </div>
+                      <span className="text-sm font-medium text-center">Număr + Stradă<br/><span className="text-xs text-foreground/50 font-normal">149 RON</span></span>
+                      {includeStreet && <Check className="w-4 h-4 text-primary" />}
+                    </button>
+                    <button
+                      onClick={() => setIncludeStreet(false)}
+                      className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${!includeStreet ? 'border-primary bg-primary/5 ring-1 ring-primary/20' : 'border-foreground/10 hover:border-foreground/30'}`}
+                    >
+                      <div className="w-full h-12 flex flex-col items-center justify-center px-2 bg-foreground/[0.03] rounded-lg">
+                        <div className="text-[8px] font-bold text-foreground/60 leading-tight">25</div>
+                        <div className="w-8 h-[2px] bg-foreground/20 my-[1px]"></div>
+                      </div>
+                      <span className="text-sm font-medium text-center">Doar Număr<br/><span className="text-xs text-foreground/50 font-normal">129 RON</span></span>
+                      {!includeStreet && <Check className="w-4 h-4 text-primary" />}
+                    </button>
+                  </div>
+                </div>
+              )}
+
                {/* Street Name Input (House only) */}
-               {productType === 'house' && (
+               {productType === 'house' && includeStreet && (
                <div className="space-y-3 animate-in fade-in">
                 <label className="text-sm font-semibold flex justify-between">
                   <span>Nume Stradă</span>
@@ -332,7 +392,7 @@ export default function Configurator() {
               )}
 
               {/* Orientation Selection (House only) */}
-              {productType === 'house' && (
+              {productType === 'house' && includeStreet && (
                 <div className="space-y-3 animate-in fade-in">
                   <label className="text-sm font-semibold">Orientare</label>
                   <div className="grid grid-cols-2 gap-3">

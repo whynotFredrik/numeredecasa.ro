@@ -58,8 +58,10 @@ function formatItemDetails(item: OrderItem): string {
 
   if (item.product_type === 'house') {
     if (item.main_number) lines.push(`Număr: <strong>${item.main_number}</strong>`);
-    if (item.street_name) lines.push(`Stradă: <strong>${item.street_name}</strong>`);
-    lines.push(`Orientare: <strong>${getOrientationName(item.house_orientation)}</strong>`);
+    if (item.street_name) {
+      lines.push(`Stradă: <strong>${item.street_name}</strong>`);
+      lines.push(`Orientare: <strong>${getOrientationName(item.house_orientation)}</strong>`);
+    }
   } else if (item.product_type === 'apartment') {
     if (item.main_number) lines.push(`Număr: <strong>${item.main_number}</strong>`);
   } else if (item.product_type === 'office') {

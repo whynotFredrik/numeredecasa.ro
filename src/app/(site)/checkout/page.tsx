@@ -379,8 +379,8 @@ export default function CheckoutPage() {
                         {item.productType === 'house' && (
                           <div className="flex flex-col items-center">
                             <span className="text-lg font-bold leading-none">{item.mainNumber}</span>
-                            <div className="w-full h-0.5 bg-foreground mt-0.5 mb-0.5"></div>
-                            <span className="text-[0.4rem] font-bold">{item.streetName.slice(0, 10)}</span>
+                            <div className={`${item.streetName ? 'w-full' : 'w-3/4'} h-0.5 bg-foreground mt-0.5 mb-0.5`}></div>
+                            {item.streetName && <span className="text-[0.4rem] font-bold">{item.streetName.slice(0, 10)}</span>}
                           </div>
                         )}
                         {item.productType === 'apartment' && (

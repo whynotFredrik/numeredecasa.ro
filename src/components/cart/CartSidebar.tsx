@@ -91,8 +91,8 @@ export function CartSidebar() {
                          {item.productType === 'house' && (
                            <>
                              <div className="text-2xl font-bold leading-none">{item.mainNumber}</div>
-                             <div className={`w-full h-1 mt-1 mb-1 ${finishBgMap[item.finish] || 'bg-[#1a1a1a]'}`}></div>
-                             <div className="text-[0.5rem] font-bold tracking-widest">{item.streetName}</div>
+                             <div className={`${item.streetName ? 'w-full' : 'w-3/4'} h-1 mt-1 mb-1 ${finishBgMap[item.finish] || 'bg-[#1a1a1a]'}`}></div>
+                             {item.streetName && <div className="text-[0.5rem] font-bold tracking-widest">{item.streetName}</div>}
                            </>
                          )}
                          {item.productType === 'apartment' && (
