@@ -16,7 +16,13 @@
       "Bash(/bin/mkdir -p /Users/serbanciobotaru/Documents/Projects/termes-ro)",
       "Bash(/Users/serbanciobotaru/.nvm/versions/node/v25.8.1/bin/npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-git --yes)",
       "Bash(/Users/serbanciobotaru/.nvm/versions/node/v25.8.1/bin/node /Users/serbanciobotaru/.nvm/versions/node/v25.8.1/bin/npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-git --yes)",
-      "Bash(env PATH=\"/Users/serbanciobotaru/.nvm/versions/node/v25.8.1/bin:/usr/bin:/bin\" /Users/serbanciobotaru/.nvm/versions/node/v25.8.1/bin/npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-git --yes)"
+      "Bash(env PATH=\"/Users/serbanciobotaru/.nvm/versions/node/v25.8.1/bin:/usr/bin:/bin\" /Users/serbanciobotaru/.nvm/versions/node/v25.8.1/bin/npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-git --yes)",
+      "Bash(npx tsc *)",
+      "Bash(./node_modules/.bin/tsc --noEmit)",
+      "Bash(npm install *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)"
     ]
   }
 }
